@@ -85,7 +85,7 @@ node {
 			}
 		}
 		
-		buildStep('amiga-m68k')
+		buildStep('amiga-m68k','reduced')
 		
 		stage('Deploying to stage') {
 			if (env.TAG_NAME) {
