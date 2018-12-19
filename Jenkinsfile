@@ -51,8 +51,15 @@ def buildStep(ext, iconset = 'default') {
 
 def freshUpRoot(ext) {
 	sh "rm -rfv build-$ext/distfiles/*"
-	sh "rm -fv AROS/contrib"
-	sh "ln -sf ../contrib AROS/contrib"
+	// uncomment the following section to remove the whole toolchain and build: 
+	// sh "rm -rfv ${env.WORKSPACE}/tools"
+	// sh "rm -rfv ${env.WORKSPACE}/build-$ext/*"
+	// end of section
+	sh "rm -rfv AROS/contrib"
+	sh "rm -rfv AROS/ports"
+	sh "cp -fvr contrib AROS/"
+	sh "cp -fvr ports AROS/"
+
 	sh "mkdir -p build-$ext"
   	sh "mkdir -p externalsources"
 	sh "mkdir -p tools"
@@ -78,7 +85,7 @@ node {
 			}
 		}
 		
-		buildStep('amiga-m68k','reduced')
+		buildStep('amiga-m68k')
 		
 		stage('Deploying to stage') {
 			if (env.TAG_NAME) {
