@@ -9,6 +9,8 @@
 #include <exec/io.h>
 #include <aros/libcall.h>
 #include <proto/exec.h>
+
+#define DEBUG 1
 #include <aros/debug.h>
 
 /*****************************************************************************
@@ -47,30 +49,34 @@
 ******************************************************************************/
 {
     AROS_LIBFUNC_INIT
-
+D(bug("DoIO: Begin\n"));
     /*
 	Prepare the message. Tell the device that it is OK to wait in the
 	BeginIO() call by setting the quick bit.
     */
     ASSERT_VALID_PTR(iORequest);
     if (!iORequest) return -1;
-
+D(bug("DoIO: iORequest 0x%p\n", iORequest));
     iORequest->io_Flags=IOF_QUICK;
     iORequest->io_Message.mn_Node.ln_Type=0;
 
     ASSERT_VALID_PTR(iORequest->io_Device);
     if (!iORequest->io_Device) return -1;
-
+D(bug("DoIO: iORequest->io_Device 0x%p\n", iORequest->io_Device));
     /* Call BeginIO() vector */
     AROS_LVO_CALL1NR(void,
 	AROS_LCA(struct IORequest *,iORequest,A1),
 	struct Device *,iORequest->io_Device,5,
     );
-
+D(bug("DoIO: iORequest->io_Flags & IOF_QUICK %d\n", iORequest->io_Flags&IOF_QUICK));
     /* If the quick flag is cleared it wasn't done quickly. Wait for completion. */
     if(!(iORequest->io_Flags&IOF_QUICK))
+      {
+        D(bug("DoIO: Before WaitIO\n"));
 	WaitIO(iORequest);
-
+        D(bug("DoIO: After WaitIO\n"));
+      }
+D(bug("DoIO: End iORequest->io_Error %d\n", iORequest->io_Error));
     /* All done. Get returncode. */
     return iORequest->io_Error;
     AROS_LIBFUNC_EXIT
