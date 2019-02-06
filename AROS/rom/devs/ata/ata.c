@@ -580,7 +580,7 @@ static UWORD const NSDSupported[] = {
 static void HandleIO(struct IORequest *io, LIBBASETYPEPTR LIBBASE)
 {
     io->io_Error = 0;
-
+    bug("[ATA]:  io_Command %04x\n", io->io_Command); 
     /* Handle few commands directly here */
     switch (io->io_Command)
     {
@@ -590,14 +590,17 @@ static void HandleIO(struct IORequest *io, LIBBASETYPEPTR LIBBASE)
         */
         case NSCMD_DEVICEQUERY:
             {
+                bug("[ATA%02ld] %s: NSCMD_DEVICEQUERY\n", ((struct ata_Unit*)io->io_Unit)->au_UnitNum, __func__);
                 struct NSDeviceQueryResult *nsdq = (struct NSDeviceQueryResult *)IOStdReq(io)->io_Data;
                 nsdq->DevQueryFormat    = 0;
                 nsdq->SizeAvailable     = sizeof(struct NSDeviceQueryResult);
                 nsdq->DeviceType        = NSDEVTYPE_TRACKDISK;
                 nsdq->DeviceSubType     = 0;
                 nsdq->SupportedCommands = (UWORD *)NSDSupported;
+                bug("[ATA%02ld] %s:  SizeAvailable %u SupportedCommands %p\n", ((struct ata_Unit*)io->io_Unit)->au_UnitNum, __func__, nsdq->SizeAvailable, nsdq->SupportedCommands);
             }
             IOStdReq(io)->io_Actual = sizeof(struct NSDeviceQueryResult);
+            bug("[ATA%02ld] %s:  io_Actual %u\n", ((struct ata_Unit*)io->io_Unit)->au_UnitNum, __func__, IOStdReq(io)->io_Actual);
             break;
 
         /*
