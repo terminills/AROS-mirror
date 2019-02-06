@@ -579,11 +579,13 @@ BOOL UAEGFXBitmap__Hidd_BitMap__SetColors(OOP_Class *cl, OOP_Object *o, struct p
     
     WaitBlitter(csd);
     clut = csd->boardinfo + PSSO_BoardInfo_CLUT;
+	bug("[UAEGfx] %s: clut @ %p\n", __func__, clut);
+	
     for (i = msg->firstColor, j = 0; j < msg->numColors; i++, j++) {
         clut[i * 3 + 0] = msg->colors[j].red >> 8;
         clut[i * 3 + 1] = msg->colors[j].green >> 8;
         clut[i * 3 + 2] = msg->colors[j].blue >> 8;
-        //bug("UAESET color %d %02x%02x%02x\n", i, msg->colors[j].red >> 8, msg->colors[j].green >> 8, msg->colors[j].blue >> 8);
+		bug("[UAEGfx] %s: color %d %02x%02x%02x\n", __func__, i, msg->colors[j].red >> 8, msg->colors[j].green >> 8, msg->colors[j].blue >> 8);
     }
     SetColorArray(csd, msg->firstColor, msg->numColors);
     
