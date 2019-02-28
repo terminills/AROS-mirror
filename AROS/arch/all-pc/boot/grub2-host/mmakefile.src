@@ -11,11 +11,14 @@ include $(SRCDIR)/config/aros.cfg
 #MM grub2-efi-host : grub2-aros-fetch
 #MM- grub2-efi-host-quick : grub2-aros-fetch
 
-BOOT_GRUB := $(AROSARCHDIR)/grub
-BOOT_EFI  := $(AROSDIR)/EFI/BOOT/grub
+BOOT_GRUB := $(AROSARCHDIR)/grub2
+BOOT_EFI  := $(AROSDIR)/EFI/BOOT/grub2
 GRUBSRCDIR := $(PORTSDIR)/grub/grub-$(GRUB2_VERSION)
 
 $(BOOT_GRUB):
+	%mkdirs_q $@
+
+$(BOOT_GRUB)/fonts:
 	%mkdirs_q $@
 
 $(BOOT_GRUB)/i386-pc:
@@ -24,31 +27,34 @@ $(BOOT_GRUB)/i386-pc:
 $(BOOT_EFI):
 	%mkdirs_q $@
 
+$(BOOT_EFI)/fonts:
+	%mkdirs_q $@
+
 $(BOOT_EFI)/i386-efi:
 	%mkdirs_q $@
 
 #MM
-bootloader-grub2gfx-common: $(BOOT_GRUB)/splash.png $(BOOT_GRUB)/_unicode.pf2 $(BOOT_EFI)/splash.png $(BOOT_EFI)/_unicode.pf2
+bootloader-grub2gfx-common: $(BOOT_GRUB)/splash.png $(BOOT_GRUB)/fonts/_unicode.pf2 $(BOOT_EFI)/splash.png $(BOOT_EFI)/fonts/_unicode.pf2
 
 $(BOOT_GRUB)/splash.png: splash.png $(BOOT_GRUB)
 		$(CP) $< $(BOOT_GRUB)
 
-$(BOOT_GRUB)/_unicode.pf2: unicode.pf2 $(BOOT_GRUB)
-		$(CP) $< $(BOOT_GRUB)/_unicode.pf2
+$(BOOT_GRUB)/fonts/_unicode.pf2: unicode.pf2 $(BOOT_GRUB)/fonts
+		$(CP) $< $(BOOT_GRUB)/fonts/_unicode.pf2
 
 $(BOOT_EFI)/splash.png: splash.png $(BOOT_EFI)
 		$(CP) $< $(BOOT_EFI)
 
-$(BOOT_EFI)/_unicode.pf2: unicode.pf2 $(BOOT_EFI)
-		$(CP) $< $(BOOT_EFI)/_unicode.pf2
+$(BOOT_EFI)/fonts/_unicode.pf2: unicode.pf2 $(BOOT_EFI)/fonts
+		$(CP) $< $(BOOT_EFI)/fonts/_unicode.pf2
 
 #MM
-bootloader-grub2gfx-common-livecd: $(BOOT_GRUB)/unicode.pf2 $(BOOT_EFI)/unicode.pf2
+bootloader-grub2gfx-common-livecd: $(BOOT_GRUB)/fonts/unicode.pf2 $(BOOT_EFI)/fonts/unicode.pf2
 
-$(BOOT_GRUB)/unicode.pf2: unicode.pf2 $(BOOT_GRUB)
+$(BOOT_GRUB)/fonts/unicode.pf2: unicode.pf2 $(BOOT_GRUB)/fonts
 		$(CP) $< $(BOOT_GRUB)
 
-$(BOOT_EFI)/unicode.pf2: unicode.pf2 $(BOOT_EFI)
+$(BOOT_EFI)/fonts/unicode.pf2: unicode.pf2 $(BOOT_EFI)/fonts
 		$(CP) $< $(BOOT_EFI)
 
 # avoid the make.tmpl s_flag in order to disable stripping of binaries
@@ -84,8 +90,8 @@ GRUB2_MODS  :=	fshelp part_msdos part_amiga part_gpt \
               	fat ntfs ntfscomp affs sfs ext2 hfsplus iso9660 \
               	minicmd
 LST_FILES   :=	command fs moddep
-MKIMG_OPTS  :=	-O i386-pc -p /$(AROS_DIR_ARCH)/grub
-MKIMG_EFI   :=  -O $(AROS_TARGET_CPU)-efi -p /EFI/BOOT/grub
+MKIMG_OPTS  :=	-O i386-pc -p /$(AROS_DIR_ARCH)/grub2
+MKIMG_EFI   :=  -O $(AROS_TARGET_CPU)-efi -p /EFI/BOOT/grub2
 
 ifeq ($(CPU),x86_64)
     EFI_GRUB_IMG := BOOTX64.EFI

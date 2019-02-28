@@ -1,5 +1,5 @@
 /*
-    Copyright © 1995-2018, The AROS Development Team. All rights reserved.
+    Copyright © 1995-2019, The AROS Development Team. All rights reserved.
     $Id$
 
     Loader for shared libraries and devices.
@@ -24,6 +24,9 @@
 #include <proto/exec.h>
 #include <proto/execlock.h>
 #include <proto/dos.h>
+
+#include <proto/lddemon.h>
+
 #include <resources/execlock.h>
 #include <aros/types/spinlock_s.h>
 
@@ -44,22 +47,22 @@
 AROS_LD2(struct Library *, OpenLibrary,
     AROS_LDA(STRPTR, libname, A1),
     AROS_LDA(ULONG, version, D0),
-    struct ExecBase *, SysBase, 0, Dos);
+    struct ExecBase *, SysBase, 0, Lddemon);
 AROS_LD4(LONG, OpenDevice,
     AROS_LDA(STRPTR, devname, A0),
     AROS_LDA(IPTR, unitNumber, D0),
     AROS_LDA(struct IORequest *, iORequest, A1),
     AROS_LDA(ULONG, flags, D1),
-    struct ExecBase *, SysBase, 0, Dos);
+    struct ExecBase *, SysBase, 0, Lddemon);
 AROS_LD1(void, CloseLibrary,
     AROS_LDA(struct Library *, library, A1),
-    struct ExecBase *, SysBase, 0, Dos);
+    struct ExecBase *, SysBase, 0, Lddemon);
 AROS_LD1(void, CloseDevice,
     AROS_LDA(struct IORequest *, iORequest, A1),
-    struct ExecBase *, SysBase, 0, Dos);
+    struct ExecBase *, SysBase, 0, Lddemon);
 AROS_LD1(void, RemLibrary,
     AROS_LDA(struct Library *, library, A1),
-    struct ExecBase *, SysBase, 0, Dos);
+    struct ExecBase *, SysBase, 0, Lddemon);
 
 struct LDDMsg
 {
@@ -80,13 +83,26 @@ struct LDDMsg
 static const char ldDemonName[] = "Lib & Dev Loader Daemon";
 
 /*
+    overridable LoadSeg
+*/
+AROS_LH1(BPTR, LDLoadSeg,
+        AROS_LHA(CONST_STRPTR, name, D1),
+        struct LDDemonBase *, ldBase, 1, Lddemon)
+{
+    AROS_LIBFUNC_INIT
+    struct Library *DOSBase = ldBase->dl_DOSBase;
+    D(bug("[LDLoadSeg] name=%s\n", name));
+    return LoadSeg(name);
+    AROS_LIBFUNC_EXIT
+}
+
+/*
   BPTR LDLoad( caller, name, basedir, DOSBase )
     Try and load a segment from disk for the object <name>, relative
     to directory <basedir>. Will also try <caller>'s current and home
     directories.
 */
-static BPTR LDLoad(struct Process *caller, STRPTR name, STRPTR basedir,
-		   struct Library *DOSBase, struct ExecBase *SysBase)
+static BPTR LDLoad(struct LDDemonBase *ldBase, struct Process *caller, STRPTR name, STRPTR basedir, struct ExecBase *SysBase)
 {
     struct Process *me = (struct Process *)FindTask(NULL);
     BPTR seglist = BNULL;
@@ -117,7 +133,7 @@ static BPTR LDLoad(struct Process *caller, STRPTR name, STRPTR basedir,
 		/* Temporarily override pr_HomeDir to let GetDeviceProc handle
 		   PROGDIR: case correctly while opening library file */
 		me->pr_HomeDir = caller->pr_HomeDir;
-		seglist = LoadSeg(name);
+		seglist = LDLoadSeg(name);
 		me->pr_HomeDir = oldHomeDir;
 	    }	
 	}
@@ -138,18 +154,18 @@ static BPTR LDLoad(struct Process *caller, STRPTR name, STRPTR basedir,
     	    D(bug("[LDLoad] Process\n"));
 	    me->pr_CurrentDir = caller->pr_CurrentDir;
 	    D(bug("[LDLoad] Trying currentdir\n"));
-	    seglist = LoadSeg(name);
+	    seglist = LDLoadSeg(name);
 	    if ((!seglist) && path)
-		seglist = LoadSeg(path);
+		seglist = LDLoadSeg(path);
 
-	/* The the program directory of the caller */
+            /* The the program directory of the caller */
 	    if((!seglist) && (caller->pr_HomeDir != BNULL))
 	    {
 		D(bug("[LDLoad] Trying homedir\n"));
 		me->pr_CurrentDir = caller->pr_HomeDir;
-		seglist = LoadSeg(name);
+		seglist = LDLoadSeg(name);
 		if ((!seglist) && path)
-		    seglist = LoadSeg(path);
+		    seglist = LDLoadSeg(path);
 	    }
 	}
 
@@ -158,12 +174,12 @@ static BPTR LDLoad(struct Process *caller, STRPTR name, STRPTR basedir,
 		/* Nup, let's try the default directory as supplied. */
 		D(bug("[LDLoad] Trying defaultdir\n"));
 		path[delimPos] = ':';
-		seglist = LoadSeg(path);
+		seglist = LDLoadSeg(path);
 	    }
 	    FreeMem(path, pathLen);
 	}
     } else
-	seglist = LoadSeg(name);
+	seglist = LDLoadSeg(name);
 
     return seglist;
 }
@@ -292,7 +308,7 @@ static struct LDObjectNode *LDNewObjectNode(STRPTR name, struct ExecBase *SysBas
     return NULL;
 }
 
-static void ProcessLDMessage(struct LDDemonBase *ldBase, struct LDDMsg *ldd, struct Library *DOSBase, struct ExecBase *SysBase);
+static void ProcessLDMessage(struct LDDemonBase *ldBase, struct LDDMsg *ldd, struct ExecBase *SysBase);
 
 static struct LDObjectNode *LDRequestObject(STRPTR libname, ULONG version, STRPTR dir, struct List *list, struct ExecBase *SysBase)
 {
@@ -308,6 +324,8 @@ static struct LDObjectNode *LDRequestObject(STRPTR libname, ULONG version, STRPT
     STRPTR stripped_libname = FilePart(libname);
     struct Library *tmplib;
     struct LDObjectNode *object;
+
+    D(bug("[LDDemon] %s()\n", __func__));
 
     /*
 	We get the DOS semaphore to prevent the following:
@@ -411,7 +429,7 @@ static struct LDObjectNode *LDRequestObject(STRPTR libname, ULONG version, STRPT
 #if INIT_IN_LDDEMON_CONTEXT
         /* Direct call if already in LDDemon context */
         if ((struct Process*)FindTask(NULL) == ldBase->dl_LDDemonTask) {
-            ProcessLDMessage(ldBase, &ldd, DOSBase, SysBase);
+            ProcessLDMessage(ldBase, &ldd, SysBase);
         } else
 #endif
         {
@@ -483,13 +501,15 @@ static void LDReleaseObject(struct LDObjectNode *object, struct ExecBase *SysBas
 AROS_LH2(struct Library *, OpenLibrary,
     AROS_LHA(STRPTR, libname, A1),
     AROS_LHA(ULONG, version, D0),
-    struct ExecBase *, SysBase, 0, Dos)
+    struct ExecBase *, SysBase, 0, Lddemon)
 {
     AROS_LIBFUNC_INIT
 
     struct LDDemonBase *ldBase = SysBase->ex_RamLibPrivate;
     struct Library *library;
     struct LDObjectNode *object;
+
+    D(bug("[LDDemon] %s()\n", __func__));
 
     object = LDRequestObject(libname, version, "libs", &SysBase->LibList, SysBase);
 
@@ -511,12 +531,14 @@ AROS_LH4(LONG, OpenDevice,
     AROS_LHA(IPTR, unitNumber, D0),
     AROS_LHA(struct IORequest *, iORequest, A1),
     AROS_LHA(ULONG, flags, D1),
-    struct ExecBase *, SysBase, 0, Dos)
+    struct ExecBase *, SysBase, 0, Lddemon)
 {
     AROS_LIBFUNC_INIT
 
     struct LDObjectNode *object;
     struct LDDemonBase *ldBase = SysBase->ex_RamLibPrivate;
+
+    D(bug("[LDDemon] %s()\n", __func__));
 
     object = LDRequestObject(devname, 0, "devs", &SysBase->DeviceList, SysBase);
     
@@ -542,13 +564,15 @@ AROS_LH4(LONG, OpenDevice,
 
 AROS_LH1(void, CloseLibrary,
     AROS_LHA(struct Library *, library, A1),
-    struct ExecBase *, SysBase, 0, Dos)
+    struct ExecBase *, SysBase, 0, Lddemon)
 {
     AROS_LIBFUNC_INIT
 
     struct LDDemonBase *ldBase = SysBase->ex_RamLibPrivate;
     struct Library *DOSBase = ldBase->dl_DOSBase;
     BPTR seglist;
+
+    D(bug("[LDDemon] %s()\n", __func__));
 
     if( library != NULL )
     {
@@ -569,12 +593,14 @@ AROS_LH1(void, CloseLibrary,
 
 AROS_LH1(void, CloseDevice,
     AROS_LHA(struct IORequest *, iORequest, A1),
-    struct ExecBase *, SysBase, 0, Dos)
+    struct ExecBase *, SysBase, 0, Lddemon)
 {
     AROS_LIBFUNC_INIT
     struct LDDemonBase *ldBase = SysBase->ex_RamLibPrivate;
     struct Library *DOSBase = ldBase->dl_DOSBase;
     BPTR seglist = BNULL;
+
+    D(bug("[LDDemon] %s()\n", __func__));
 
     Forbid();
     if( iORequest->io_Device != NULL )
@@ -595,13 +621,15 @@ AROS_LH1(void, CloseDevice,
 
 AROS_LH1(void, RemLibrary,
     AROS_LHA(struct Library *, library, A1),
-    struct ExecBase *, SysBase, 0, Dos)
+    struct ExecBase *, SysBase, 0, Lddemon)
 {
     AROS_LIBFUNC_INIT
 
     struct LDDemonBase *ldBase = SysBase->ex_RamLibPrivate;
     struct Library *DOSBase = ldBase->dl_DOSBase;
     BPTR seglist;
+
+    D(bug("[LDDemon] %s()\n", __func__));
 
     Forbid();
     /* calling ExpungeLib: library ends up in D0 and A6 for compatibility */
@@ -633,7 +661,7 @@ AROS_UFH3(LONG, LDFlush,
 #endif
     struct Library *library;
 
-    D(bug("[LDDemon] Flush called\n"));
+    D(bug("[LDDemon] %s()\n", __func__));
     ldBase->dl_LDReturn = MEM_DID_NOTHING;
 
     /* Forbid() is already done, but I don't want to rely on it. */
@@ -712,15 +740,18 @@ AROS_UFH3(LONG, LDFlush,
     AROS_USERFUNC_EXIT
 }
 
-static void ProcessLDMessage(struct LDDemonBase *ldBase, struct LDDMsg *ldd, struct Library *DOSBase, struct ExecBase *SysBase)
+static void ProcessLDMessage(struct LDDemonBase *ldBase, struct LDDMsg *ldd, struct ExecBase *SysBase)
 {
+#if INIT_IN_LDDEMON_CONTEXT
+    struct Library *DOSBase = ldBase->dl_DOSBase;
+#endif
     BPTR seglist;
     D(bug("[LDDemon] Got a request for %s in %s\n", ldd->ldd_Name, ldd->ldd_BaseDir));
 
-    seglist = LDLoad(ldd->ldd_ReplyPort.mp_SigTask, ldd->ldd_Name, ldd->ldd_BaseDir, DOSBase, SysBase);
+    seglist = LDLoad(ldBase, ldd->ldd_ReplyPort.mp_SigTask, ldd->ldd_Name, ldd->ldd_BaseDir, SysBase);
 
 #if INIT_IN_LDDEMON_CONTEXT
-    ldd->ldd_Return = CallLDInit(seglist, ldd->ldd_List, FilePart(ldd->ldd_Name), DOSBase, SysBase);
+    ldd->ldd_Return = CallLDInit(seglist, ldd->ldd_List, FilePart(ldd->ldd_Name), ldBase->dl_DOSBase, SysBase);
     D(bug("[LDDemon] Replying with %p as result, seglist was %p\n", ldd->ldd_Return, seglist));
 #else
     ldd->ldd_Return = seglist;
@@ -739,17 +770,16 @@ static AROS_PROCH(LDDemon, argptr, argsize, SysBase)
     AROS_PROCFUNC_INIT
 
     struct LDDemonBase *ldBase = SysBase->ex_RamLibPrivate;
-    struct Library *DOSBase = ldBase->dl_DOSBase;
     struct LDDMsg *ldd;
 
     for(;;)
     {
-	WaitPort(ldBase->dl_LDDemonPort);
-	while( (ldd = (struct LDDMsg *)GetMsg(ldBase->dl_LDDemonPort)) )
-	{
-            ProcessLDMessage(ldBase, ldd, DOSBase, SysBase);
+        WaitPort(ldBase->dl_LDDemonPort);
+        while( (ldd = (struct LDDMsg *)GetMsg(ldBase->dl_LDDemonPort)) )
+        {
+            ProcessLDMessage(ldBase, ldd, SysBase);
             ReplyMsg((struct Message *)ldd);
-	} /* messages available */
+        } /* messages available */
     }
 
     /* lddemon died */
@@ -812,7 +842,7 @@ static ULONG LDDemon_Init(struct LDDemonBase *ldBase)
 
 #define SetFunc(offs,ptr) \
     SetFunction(&SysBase->LibNode, (-offs)*(LONG)LIB_VECTSIZE, \
-    			AROS_SLIB_ENTRY(ptr,Dos,0))
+    			AROS_SLIB_ENTRY(ptr,Lddemon,0))
 
     /* Do not set the vectors until you have initialised everything else. */
     ldBase->__OpenLibrary = SetFunc(92, OpenLibrary);

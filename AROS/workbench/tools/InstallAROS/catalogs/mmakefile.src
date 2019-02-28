@@ -1,0 +1,10 @@
+# Copyright © 2003, The AROS Development Team. All rights reserved.
+# $Id: mmakefile.src 54991 2018-01-03 16:39:21Z hitchhikr $
+
+include $(SRCDIR)/config/aros.cfg
+
+CATALOGS:=
+
+%build_catalogs mmake=workbench-tools-installaros-catalogs \
+    catalogs=$(CATALOGS) \
+    name=installaros subdir=System/Tools/
