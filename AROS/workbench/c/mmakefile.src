@@ -1,4 +1,4 @@
-# Copyright Â© 2003-2018, The AROS Development Team. All rights reserved.
+# Copyright © 2003-2019, The AROS Development Team. All rights reserved.
 # $Id$
 
 include $(SRCDIR)/config/aros.cfg
@@ -59,10 +59,6 @@ FILES := \
 DTFILE := \
     AddDataTypes
 
-BLFILES :=  \
-    install-i386-pc \
-    Install-grub2-i386-pc
-
 # Files that use AROS_SHx() instead of main()
 SH_FILES := \
     AROSMonDrvs \
@@ -98,9 +94,15 @@ USER_LDFLAGS    := -static
 %build_prog mmake=workbench-c-requeststring progname=RequestString \
     files=RequestString targetdir=$(AROS_C) coverageinstr=no
 
+$(OBJDIR)/evalParser.tab.c : evalParser.y
+	@$(ECHO) Generating $(notdir $@) from $<...
+	@$(BISON) -o $@ $<
+
 %build_progs mmake=workbench-c \
-    files="$(FILES) $(BLFILES)" targetdir=$(AROS_C) \
+    files="$(FILES)" targetdir=$(AROS_C) \
     uselibs="uuid debug" coverageinstr=no
+
+$(workbench-c_DEPS) : $(OBJDIR)/evalParser.tab.c
 
 %build_progs mmake=workbench-c-sh \
     files=$(SH_FILES) targetdir=$(AROS_C) \
@@ -112,12 +114,5 @@ endif
 
 %build_prog mmake=workbench-c-adddatatypes progname=AddDataTypes \
     files="$(DTFILE)" targetdir=$(AROS_C) coverageinstr=no
-
-$(OBJDIR)/evalParser.tab.c : evalParser.y
-	@$(ECHO) Generating $(notdir $@) from $<...
-	@$(BISON) -o $@ $<
-
-$(OBJDIR)/Eval.d : $(OBJDIR)/evalParser.tab.c
-	@$(NOP)
 
 %common

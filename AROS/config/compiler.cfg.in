@@ -6,11 +6,10 @@
 # Standard compiler features ...
 #
 CFLAGS_EXCEPTIONS                       := @aros_cflags_exceptions@
-CFLAGS_PERMISSIVE                       := @aros_cflags_permissive@
+CFLAGS_NO_EXCEPTIONS                    := @aros_cflags_noexceptions@
 
 #
 CFLAGS_FAST_MATH                        := @aros_cflags_fast_math@
-CFLAGS_NO_BUILTIN_FLOOR                 := @aros_cflags_no_builtin_floor@
 
 #
 # LTO/Graphite optimization flags
@@ -42,6 +41,9 @@ CFLAGS_NO_IPA_CP                        := @aros_cflags_noipacp@
 CFLAGS_OMIT_FP                          := @aros_cflags_omitfp@
 CFLAGS_NO_OMIT_FP                       := @aros_cflags_noomitfp@
 
+CFLAGS_ALIGNED_NEW                      := @aros_cflags_alignednew@
+CFLAGS_NO_ALIGNED_NEW                   := @aros_cflags_noalignednew@
+
 # GCOV flags
 CFLAGS_PROFILE_ARCS                     := @aros_cflags_profilearcs@
 CFLAGS_NO_PROFILE_ARCS                  := @aros_cflags_noprofilearcs@
@@ -49,16 +51,45 @@ CFLAGS_NO_PROFILE_ARCS                  := @aros_cflags_noprofilearcs@
 CFLAGS_TEST_COVERAGE                    := @aros_cflags_testcoverage@
 CFLAGS_NO_TEST_COVERAGE                 := @aros_cflags_notestcoverage@
 
+CFLAGS_INSTR_FUNCTIONS                  := @aros_cflags_instrfuncs@
+CFLAGS_NO_INSTR_FUNCTIONS               := @aros_cflags_noinstrfuncs@
+
+#Builtins
+CFLAGS_BUILTIN                          := @aros_cflags_builtin@
+CFLAGS_NO_BUILTIN                       := @aros_cflags_no_builtin@
+CFLAGS_NO_BUILTIN_FLOOR                 := @aros_cflags_no_builtin_floor@
+CFLAGS_NO_BUILTIN_VSNPRINTF             := @aros_cflags_no_builtin_vsnprintf@
+
+CFLAGS_FREESTANDING                     := @aros_cflags_freestanding@
+CFLAGS_NO_FREESTANDING                  := @aros_cflags_no_freestanding@
+
+CFLAGS_ASYNCHRONOUS_UNWIND_TABLES       := @aros_cflags_asynchronous_unwind_tables@
+CFLAGS_NO_ASYNCHRONOUS_UNWIND_TABLES    := @aros_cflags_no_asynchronous_unwind_tables@
+
+# C++/ObjC++
+CFLAGS_PERMISSIVE                       := @aros_cxxflags_permissive@
+CFLAGS_NO_PERMISSIVE                    := @aros_cxxflags_nopermissive@
+
+# C++/OBjC++ Runtime type-information
+CFLAGS_RTTI                             := @aros_cxxflags_rtti@
+CFLAGS_NO_RTTI                          := @aros_cxxflags_nortti@
+
 #
-# -iquote support
+# -isystem/-iquote support
 #
+CFLAGS_ISYSTEM                          := @aros_cflags_isystem@
+CFLAGS_ISYSTEM_END                      := @aros_cflags_isystem_end@
 CFLAGS_IQUOTE                           := @aros_cflags_iquote@
 CFLAGS_IQUOTE_END                       := @aros_cflags_iquote_end@
 
 #
-# -mno-red-zone support
+# -mred-zone/-mms-bitfields support
 #
+CFLAGS_RED_ZONE                         := @aros_cflags_red_zone@
 CFLAGS_NO_RED_ZONE                      := @aros_cflags_no_red_zone@
+
+CFLAGS_MS_BITFIELDS                     := @aros_cflags_ms_bitfields@
+CFLAGS_NO_MS_BITFIELDS                  := @aros_cflags_no_ms_bitfields@
 
 #
 # "Enable" compiler warning flags
@@ -220,3 +251,7 @@ NOWARN_IMPLICIT_FALLTHROUGH             := @aros_nowarnflags_implicit_fallthroug
 NOWARN_MISSING_PROTOTYPES               := @aros_nowarnflags_missing_prototypes@
 NOWARN_CLASS_MEMACCESS                  := @aros_nowarnflags_class_memaccess@
 NOWARN_INT_IN_BOOL_CONTEXT              := @aros_nowarnflags_int_in_bool_context@
+
+# Toolchain support
+
+COMPILER_SYSROOT                        := @aros_toolchain_sysroot@

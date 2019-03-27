@@ -423,7 +423,8 @@ static CONST_STRPTR parse_escape_code(ZTextLine * ztl,
     case 'P':                  /* pen number */
         {
             LONG pen;
-            char *t;
+            STRPTR t;
+            UWORD len;
 
             if (*s != '[')
                 break;
@@ -434,14 +435,17 @@ static CONST_STRPTR parse_escape_code(ZTextLine * ztl,
             t = strchr(s, ']');
             if (t == NULL)
                 break;
-            *t = 0;
-            if (StrToLong(s, &pen) != -1)
+            len = t - s;
+            if (len < 6)
             {
+                *t = 0;
+                if (StrToLong(s, &pen) == -1)
+                    pen = 0;
                 D(bug("pen = %ld\n", pen));
                 zc->pen = pen;
+                *t = ']';
             }
-            *t = ']';
-            zc->text = t;
+            zc->text = s - 1;
             zune_text_chunk_new(zc);
             zc->text_start = t + 1;
             break;
