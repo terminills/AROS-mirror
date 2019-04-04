@@ -9,17 +9,17 @@ ADDITIONALICONS := SysMon Snoopy Find
 DISKIMAGESRCS := DiskImageGUI-1.png DiskImageGUI-2.png
 DISKIMAGEICON := DiskImageGUI
 
-#MM- iconset-Gorilla-wbench-icons-aros-clean : iconset-Gorilla-wbench-icons-aros-system-clean
-#MM- iconset-Gorilla-additional-icons-aros-clean : iconset-Gorilla-additional-icons-aros-system-clean
-#MM- iconset-Gorilla-wbench-icons-aros : iconset-Gorilla-wbench-icons-aros-system
-#MM- iconset-Gorilla-additional-icons-aros : iconset-Gorilla-additional-icons-aros-system
-#MM  iconset-Gorilla-additional-icons-aros-system : iconset-Gorilla-additional-icons-aros-system-diskimage
+#MM- iconset-Reduced-wbench-icons-aros-clean : iconset-Reduced-wbench-icons-aros-system-clean
+#MM- iconset-Reduced-additional-icons-aros-clean : iconset-Reduced-additional-icons-aros-system-clean
+#MM- iconset-Reduced-wbench-icons-aros : iconset-Reduced-wbench-icons-aros-system
+#MM- iconset-Reduced-additional-icons-aros : iconset-Reduced-additional-icons-aros-system
+#MM  iconset-Reduced-additional-icons-aros-system : iconset-Reduced-additional-icons-aros-system-diskimage
 
-%build_icons mmake=iconset-Gorilla-wbench-icons-aros-system icons=$(BASEICONS) \
+%build_icons mmake=iconset-Reduced-wbench-icons-aros-system icons=$(BASEICONS) \
              dir=$(AROS_SYSTEM)
 
-%build_icons mmake=iconset-Gorilla-additional-icons-aros-system icons=$(ADDITIONALICONS) \
+%build_icons mmake=iconset-Reduced-additional-icons-aros-system icons=$(ADDITIONALICONS) \
              dir=$(AROS_SYSTEM)
 
-%build_icons mmake=iconset-Gorilla-additional-icons-aros-system-diskimage \
+%build_icons mmake=iconset-Reduced-additional-icons-aros-system-diskimage \
              icons=$(DISKIMAGEICON) dir=$(AROS_SYSTEM) image=$(DISKIMAGESRCS)

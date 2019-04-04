@@ -6,14 +6,14 @@ include $(SRCDIR)/config/aros.cfg
 BASEICONS := Sashimi
 ADDITIONALICONS := Bifteck Hardware Tests 
 
-#MM- iconset-Gorilla-wbench-icons-aros-clean : iconset-Gorilla-wbench-icons-aros-debug-clean
-#MM- iconset-Gorilla-additional-icons-aros : iconset-Gorilla-additional-icons-aros-debug-clean
+#MM- iconset-Reduced-wbench-icons-aros-clean : iconset-Reduced-wbench-icons-aros-debug-clean
+#MM- iconset-Reduced-additional-icons-aros : iconset-Reduced-additional-icons-aros-debug-clean
 
-#MM- iconset-Gorilla-wbench-icons-aros : iconset-Gorilla-wbench-icons-aros-debug
-#MM- iconset-Gorilla-additional-icons-aros : iconset-Gorilla-additional-icons-aros-debug
+#MM- iconset-Reduced-wbench-icons-aros : iconset-Reduced-wbench-icons-aros-debug
+#MM- iconset-Reduced-additional-icons-aros : iconset-Reduced-additional-icons-aros-debug
 
-%build_icons mmake=iconset-Gorilla-wbench-icons-aros-debug icons=$(BASEICONS) \
+%build_icons mmake=iconset-Reduced-wbench-icons-aros-debug icons=$(BASEICONS) \
              dir=$(AROS_DEBUG)
 
-%build_icons mmake=iconset-Gorilla-additional-icons-aros-debug icons=$(ADDITIONALICONS) \
+%build_icons mmake=iconset-Reduced-additional-icons-aros-debug icons=$(ADDITIONALICONS) \
              dir=$(AROS_DEBUG)

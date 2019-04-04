@@ -5,7 +5,7 @@ include $(SRCDIR)/config/aros.cfg
 
 ICONS := Help Catalogs Flags Countries Languages
 
-#MM- iconset-Gorilla-wbench-icons-aros-clean : iconset-Gorilla-wbench-icons-aros-locale-clean
-#MM- iconset-Gorilla-wbench-icons-aros : iconset-Gorilla-wbench-icons-aros-locale
-%build_icons mmake=iconset-Gorilla-wbench-icons-aros-locale icons=$(ICONS) \
+#MM- iconset-Reduced-wbench-icons-aros-clean : iconset-Reduced-wbench-icons-aros-locale-clean
+#MM- iconset-Reduced-wbench-icons-aros : iconset-Reduced-wbench-icons-aros-locale
+%build_icons mmake=iconset-Reduced-wbench-icons-aros-locale icons=$(ICONS) \
              dir=$(AROS_LOCALE)
