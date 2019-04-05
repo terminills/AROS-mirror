@@ -1,0 +1,11 @@
+# $Id: mmakefile.src 53159 2017-01-05 07:29:22Z NicJA $
+
+include $(SRCDIR)/config/aros.cfg
+
+USER_CFLAGS := -D__OOP_NOATTRBASES__ -D__GRAPHICS_NOHIDDBASE__ \
+	       -D__UTILITY_NOLIBBASE__ -D__GRAPHICS_NOLIBBASE__ \
+	       -D__OOP_NOLIBBASE__
+
+%build_module mmake=kernel-amiga-m68k-sagagfx \
+    modname=sagagfx modtype=hidd \
+    files="startup sagagfx_hiddclass sagagfx_bitmapclass sagartg"
