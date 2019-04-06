@@ -26,63 +26,69 @@ BOOL Init_VampireGFXClass(LIBBASETYPEPTR LIBBASE);
 static int VampireGFX_Init(LIBBASETYPEPTR LIBBASE)
 {
     ULONG err = 0;
+    int result = FALSE;
+
     struct ExecBase *SysBase = (LIBBASE)->csd.cs_SysBase;
+    struct Library  *OOPBase;
     struct Library  *GfxBase = TaggedOpenLibrary(TAGGEDOPEN_GRAPHICS);
-    struct Library  *OOPBase = OpenLibrary("oop.library", 0);
 
     D(bug("**************************** VampireGFX_Init ******************************\n"));
 
-    if (!GfxBase)
-        return FALSE;
-
-    LIBBASE->csd.basebm = OOP_FindClass(CLID_Hidd_BitMap);
-    CloseLibrary(OOPBase);
-
-    if (!Init_VampireGFXClass(LIBBASE))
-        goto _ABORT;
-
-    LIBBASE->library.lib_OpenCnt = 1;
-    BOARDID = ( *(volatile UWORD *)VREG_BOARD ) >> 8;
-
-    if (BOARDID == VREG_BOARD_Unknown ||
-        BOARDID >= VREG_BOARD_Future)
+    if (GfxBase)
     {
-        // Not a Vampire Board
-        goto _ABORT;
+        OOPBase = OpenLibrary("oop.library", 0);
+        if (OOPBase)
+        {
+            LIBBASE->csd.basebm = OOP_FindClass(CLID_Hidd_BitMap);
+            CloseLibrary(OOPBase);
+        }
+
+        if (Init_VampireGFXClass(LIBBASE))
+        {
+            LIBBASE->library.lib_OpenCnt = 1;
+
+            BOARDID = ( *(volatile UWORD *)VREG_BOARD ) >> 8;
+
+            if (BOARDID != VREG_BOARD_Unknown &&
+                BOARDID < VREG_BOARD_Future)
+            {
+                //////////////////////////////////////////////////////
+                // If the user is holding down SHIFT, then the driver don't load.
+                //////////////////////////////////////////////////////
+
+                if (0 == OpenDevice("input.device", 0, &io, 0))
+                {
+                    struct Library *InputBase = (struct Library *)io.io_Device;
+                    UWORD qual = PeekQualifier();
+
+                    CloseDevice(&io);
+
+                    if (!(qual & (IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT)))
+                    {
+                        D(bug("[HiddVampireGfx] Init: Looks good, Installing driver\n"));
+                        err = AddDisplayDriver(LIBBASE->csd.gfxclass, NULL,
+		                               DDRV_KeepBootMode, TRUE,
+	                                       DDRV_IDMask      , 0xF0000000,
+			                       TAG_DONE);
+
+                        D(bug("[HiddVampireGfx] AddDisplayDriver() result: %u\n", err));
+
+                        if (!err)
+                        {
+                            LIBBASE->library.lib_OpenCnt = 1;
+                            result = TRUE;
+                        }
+                    }
+                }
+            }
+        }
+
+        CloseLibrary(GfxBase);
     }
+    else
+        D(bug("[HiddVampireGfx] Failed to open graphics.library!\n"));
 
-
-    //////////////////////////////////////////////////////
-    // If the user is holding down SHIFT, then the driver don't load.
-    //////////////////////////////////////////////////////
-
-    if (0 == OpenDevice("input.device", 0, &io, 0))
-    {
-        struct Library *InputBase = (struct Library *)io.io_Device;
-        UWORD qual = PeekQualifier();
-        CloseDevice(&io);
-
-        if (qual & (IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
-            goto _ABORT;
-    }
-
-    err = AddDisplayDriver(LIBBASE->csd.gfxclass, NULL,
-			   DDRV_KeepBootMode, TRUE,
-			   DDRV_IDMask      , 0xF0000000,
-			   TAG_DONE);
-
-    D(bug("[HiddVampireGfx] AddDisplayDriver() result: %u\n", err));
-
-    if (err)
-        goto _ABORT;
-
-    LIBBASE->library.lib_OpenCnt = 1;
-
-    return TRUE;
-
-_ABORT:
-    CloseLibrary(GfxBase);
-    return FALSE;
+    return result;
 }
 
 ADD2INITLIB(VampireGFX_Init, 0)
