@@ -24,9 +24,9 @@
 
 #include LC_LIBDEFS_FILE
 
-#include "sagagfx_intern.h"
-#include "sagagfx_bitmap.h"
-#include "sagartg.h"
+#include "vampiregfx_intern.h"
+#include "vampiregfx_bitmap.h"
+#include "vampirertg.h"
 
 #define SDEBUG 0
 #define DEBUG 0
@@ -37,9 +37,9 @@
 #define SIZE_PFLIST 19
 #define SIZE_MODELIST (5 + RGBFB_MaxFormats)
 
-HIDDT_ModeID *SAGAGFXCl__Hidd_Gfx__QueryModeIDs(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_QueryModeIDs *msg)
+HIDDT_ModeID *VampireGFXCl__Hidd_Gfx__QueryModeIDs(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_QueryModeIDs *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
     struct RTGMode *node;
     struct TagItem *tag, *tstate;
     ULONG minwidth = 0, maxwidth = 0xFFFFFFFF;
@@ -123,18 +123,18 @@ HIDDT_ModeID *SAGAGFXCl__Hidd_Gfx__QueryModeIDs(OOP_Class *cl, OOP_Object *o, st
     return modeids;
 }
 
-VOID SAGAGFXCl__Hidd_Gfx__ReleaseModeIDs(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_ReleaseModeIDs *msg)
+VOID VampireGFXCl__Hidd_Gfx__ReleaseModeIDs(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_ReleaseModeIDs *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
     if (csd->superforward)
    	OOP_DoSuperMethod(cl, o, (OOP_Msg)msg);
     else
     	FreeVec(msg->modeIDs);
 }
 
-HIDDT_ModeID SAGAGFXCl__Hidd_Gfx__NextModeID(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_NextModeID *msg)
+HIDDT_ModeID VampireGFXCl__Hidd_Gfx__NextModeID(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_NextModeID *msg)
 {
-	struct sagagfx_staticdata *csd = CSD(cl);
+	struct vampiregfx_staticdata *csd = CSD(cl);
 	struct RTGMode *node = NULL;
 	HIDDT_ModeID mid = vHidd_ModeID_Invalid;
 
@@ -158,9 +158,9 @@ HIDDT_ModeID SAGAGFXCl__Hidd_Gfx__NextModeID(OOP_Class *cl, OOP_Object *o, struc
 	return mid;
 }
 
-BOOL SAGAGFXCl__Hidd_Gfx__GetMode(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_GetMode *msg)
+BOOL VampireGFXCl__Hidd_Gfx__GetMode(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_GetMode *msg)
 {
-	struct sagagfx_staticdata *csd = CSD(cl);
+	struct vampiregfx_staticdata *csd = CSD(cl);
 	struct RTGMode *node;
 
  	if (csd->superforward)
@@ -231,9 +231,9 @@ static const UBYTE rgbtypelist[] = {
     0
 };
 
-OOP_Object *SAGAGFXCl__Root__New(OOP_Class *cl, OOP_Object *o, struct pRoot_New *msg)
+OOP_Object *VampireGFXCl__Root__New(OOP_Class *cl, OOP_Object *o, struct pRoot_New *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
     struct LibResolution *r;
     WORD rescnt, i, j, k, l;
     struct TagItem *reslist, *restags, *pflist, *modetags;
@@ -256,7 +256,7 @@ OOP_Object *SAGAGFXCl__Root__New(OOP_Class *cl, OOP_Object *o, struct pRoot_New 
     ForeachNode(csd->boardinfo + PSSO_BoardInfo_ResolutionsList, r) {
         rescnt++;
     }
-    D(bug("SAGAGFX: resolutions: %d, supportmask: %x\n", rescnt, supportedformats));
+    D(bug("VampireGFX: resolutions: %d, supportmask: %x\n", rescnt, supportedformats));
 
     reslist = AllocVec(rescnt * SIZE_RESLIST * sizeof(struct TagItem), MEMF_PUBLIC | MEMF_CLEAR);
     restags = AllocVec((rescnt + 1) * sizeof(struct TagItem), MEMF_PUBLIC | MEMF_CLEAR);
@@ -270,7 +270,7 @@ OOP_Object *SAGAGFXCl__Root__New(OOP_Class *cl, OOP_Object *o, struct pRoot_New 
     	reslist[i * SIZE_RESLIST + 1].ti_Tag = aHidd_Sync_VDisp;
     	reslist[i * SIZE_RESLIST + 1].ti_Data = r->Height;
     	reslist[i * SIZE_RESLIST + 2].ti_Tag = aHidd_Sync_Description;
-    	reslist[i * SIZE_RESLIST + 2].ti_Data = (IPTR)(csd->CardBase ? "RTGFX:%hx%v" : "SAGAGFX:%hx%v");
+    	reslist[i * SIZE_RESLIST + 2].ti_Data = (IPTR)(csd->CardBase ? "RTGFX:%hx%v" : "VampireGFX:%hx%v");
     	reslist[i * SIZE_RESLIST + 3].ti_Tag = aHidd_Sync_PixelClock;
     	reslist[i * SIZE_RESLIST + 3].ti_Data = r->Modes[CHUNKY]->PixelClock;
     	reslist[i * SIZE_RESLIST + 4].ti_Tag = TAG_DONE;
@@ -397,7 +397,7 @@ OOP_Object *SAGAGFXCl__Root__New(OOP_Class *cl, OOP_Object *o, struct pRoot_New 
     mytags[1].ti_Tag = TAG_MORE;
     mytags[1].ti_Data = (IPTR)msg->attrList;
 
-    EnterFunc(bug("SAGAGFX::New() tags=%x\n", mytags));
+    EnterFunc(bug("VampireGFX::New() tags=%x\n", mytags));
 
     mymsg.mID	= msg->mID;
     mymsg.attrList = mytags;
@@ -410,7 +410,7 @@ OOP_Object *SAGAGFXCl__Root__New(OOP_Class *cl, OOP_Object *o, struct pRoot_New 
 	struct gfx_data *data = OOP_INST_DATA(cl, o);
 	HIDDT_ModeID *midp;
 
-	D(bug("SAGAGFX::New(): Got object from super\n"));
+	D(bug("VampireGFX::New(): Got object from super\n"));
 	NewList((struct List *)&data->bitmaps);
 	csd->initialized = 1;
 	csd->spritecolors = 16;
@@ -475,30 +475,30 @@ OOP_Object *SAGAGFXCl__Root__New(OOP_Class *cl, OOP_Object *o, struct pRoot_New 
     FreeVec(pflist);
     FreeVec(modetags);
 
-    ReturnPtr("SAGAGFX::New", OOP_Object *, o);
+    ReturnPtr("VampireGFX::New", OOP_Object *, o);
 }
 
 /********** GfxHidd::Dispose()  ******************************/
-VOID SAGAGFXCl__Root__Dispose(OOP_Class *cl, OOP_Object *o, OOP_Msg msg)
+VOID VampireGFXCl__Root__Dispose(OOP_Class *cl, OOP_Object *o, OOP_Msg msg)
 {
-    EnterFunc(bug("SAGAGFX::Dispose(o=%p)\n", o);
+    EnterFunc(bug("VampireGFX::Dispose(o=%p)\n", o);
 
-    D(bug("SAGAGFX::Dispose: calling super\n"));
+    D(bug("VampireGFX::Dispose: calling super\n"));
     OOP_DoSuperMethod(cl, o, msg);
 
-    ReturnVoid("SAGAGFX::Dispose");
+    ReturnVoid("VampireGFX::Dispose");
 }
 
 
-OOP_Object *SAGAGFXCl__Hidd_Gfx__CreateObject(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_CreateObject *msg)
+OOP_Object *VampireGFXCl__Hidd_Gfx__CreateObject(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_CreateObject *msg)
 {
     OOP_Object      *object = NULL;
 
-    EnterFunc(bug("SAGAGFX::CreateObject()\n"));
+    EnterFunc(bug("VampireGFX::CreateObject()\n"));
 
     if (msg->cl == CSD(cl)->basebm)
     {
-        struct sagagfx_staticdata *csd = CSD(cl);
+        struct vampiregfx_staticdata *csd = CSD(cl);
         HIDDT_ModeID		modeid;
         struct pHidd_Gfx_CreateObject   p;
         struct TagItem tags[] =
@@ -521,15 +521,15 @@ OOP_Object *SAGAGFXCl__Hidd_Gfx__CreateObject(OOP_Class *cl, OOP_Object *o, stru
     else
         object = (OOP_Object *)OOP_DoSuperMethod(cl, o, (OOP_Msg)msg);
 
-    ReturnPtr("SAGAGFX::CreateObject", OOP_Object *, object);
+    ReturnPtr("VampireGFX::CreateObject", OOP_Object *, object);
 }
 
-VOID SAGAGFXCl__Root__Get(OOP_Class *cl, OOP_Object *o, struct pRoot_Get *msg)
+VOID VampireGFXCl__Root__Get(OOP_Class *cl, OOP_Object *o, struct pRoot_Get *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
     ULONG idx;
 
-    //bug("SAGAGFXCl__Root__Get %x\n", msg->attrID);
+    //bug("VampireGFXCl__Root__Get %x\n", msg->attrID);
 
     if (IS_GFX_ATTR(msg->attrID, idx))
     {
@@ -549,23 +549,23 @@ VOID SAGAGFXCl__Root__Get(OOP_Class *cl, OOP_Object *o, struct pRoot_Get *msg)
 	    	*msg->storage = FALSE;
 	    return;
 	    case aoHidd_Gfx_DriverName:
-		*msg->storage = (IPTR)"SAGAGFX";
+		*msg->storage = (IPTR)"VampireGFX";
 	    return;
 	}
     }
     OOP_DoSuperMethod(cl, o, (OOP_Msg)msg);
 }
 
-VOID SAGAGFXCl__Root__Set(OOP_Class *cl, OOP_Object *obj, struct pRoot_Set *msg)
+VOID VampireGFXCl__Root__Set(OOP_Class *cl, OOP_Object *obj, struct pRoot_Set *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
     struct TagItem  *tag, *tstate;
 
     tstate = msg->attrList;
     while((tag = NextTagItem(&tstate)))
     {
     	ULONG idx;
-	D(bug("SAGAGFXCl__Root__Set %x\n", tag->ti_Tag));
+	D(bug("VampireGFXCl__Root__Set %x\n", tag->ti_Tag));
     	if (IS_GFX_ATTR(tag->ti_Tag, idx)) {
     	    D(bug("->%d\n", idx));
 	    switch(idx)
@@ -583,9 +583,9 @@ VOID SAGAGFXCl__Root__Set(OOP_Class *cl, OOP_Object *obj, struct pRoot_Set *msg)
     OOP_DoSuperMethod(cl, obj, (OOP_Msg)msg);
 }
 #if 0
-ULONG SAGAGFXCl__Hidd_Gfx__MakeViewPort(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_MakeViewPort *msg)
+ULONG VampireGFXCl__Hidd_Gfx__MakeViewPort(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_MakeViewPort *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
 
     csd->vpe = NULL;
     if (!msg)
@@ -595,16 +595,16 @@ ULONG SAGAGFXCl__Hidd_Gfx__MakeViewPort(OOP_Class *cl, OOP_Object *o, struct pHi
     return MVP_OK;
 }
 
-void SAGAGFXCl__Hidd_Gfx__CleanViewPort(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_CleanViewPort *msg)
+void VampireGFXCl__Hidd_Gfx__CleanViewPort(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_CleanViewPort *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
 
     csd->vpe = NULL;
     bug("cleanviewport\n");
 }
 #endif
 
-static void doshow(struct sagagfx_staticdata *csd, OOP_Object *bm, struct ViewPort *vp, BOOL offonly)
+static void doshow(struct vampiregfx_staticdata *csd, OOP_Object *bm, struct ViewPort *vp, BOOL offonly)
 {
     struct IntuitionBase *ib = (struct IntuitionBase*)csd->cs_IntuitionBase;
     struct ViewPort *vpi = NULL;
@@ -642,17 +642,17 @@ static void doshow(struct sagagfx_staticdata *csd, OOP_Object *bm, struct ViewPo
     }
 }
 
-OOP_Object *SAGAGFXCl__Hidd_Gfx__Show(OOP_Class *cl, OOP_Object *c, struct pHidd_Gfx_Show *msg)
+OOP_Object *VampireGFXCl__Hidd_Gfx__Show(OOP_Class *cl, OOP_Object *c, struct pHidd_Gfx_Show *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
 
     doshow(csd, msg->bitMap, csd->viewport, FALSE);
     return msg->bitMap;
 }
 
-ULONG SAGAGFXCl__Hidd_Gfx__PrepareViewPorts(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_ShowViewPorts *msg)
+ULONG VampireGFXCl__Hidd_Gfx__PrepareViewPorts(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_ShowViewPorts *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
     struct HIDD_ViewPortData *vpd = msg->Data;
     OOP_Object *bm = NULL;
     struct ViewPort *vp = NULL;
@@ -669,9 +669,9 @@ ULONG SAGAGFXCl__Hidd_Gfx__PrepareViewPorts(OOP_Class *cl, OOP_Object *o, struct
     return MCOP_OK;
 }
 
-ULONG SAGAGFXCl__Hidd_Gfx__ShowViewPorts(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_ShowViewPorts *msg)
+ULONG VampireGFXCl__Hidd_Gfx__ShowViewPorts(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_ShowViewPorts *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
     struct HIDD_ViewPortData *vpd = msg->Data;
     OOP_Object *bm = NULL;
     struct ViewPort *vp = NULL;
@@ -685,9 +685,9 @@ ULONG SAGAGFXCl__Hidd_Gfx__ShowViewPorts(OOP_Class *cl, OOP_Object *o, struct pH
     return TRUE;
 }
 
-VOID SAGAGFXCl__Hidd_Gfx__CopyBox(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_CopyBox *msg)
+VOID VampireGFXCl__Hidd_Gfx__CopyBox(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_CopyBox *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
     HIDDT_DrawMode mode = GC_DRMD(msg->gc);
     struct bm_data *sdata = NULL;
     struct bm_data *ddata = NULL;
@@ -828,9 +828,9 @@ VOID SAGAGFXCl__Hidd_Gfx__CopyBox(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx
 
 }
 
-BOOL SAGAGFXCl__Hidd_Gfx__CopyBoxMasked(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_CopyBoxMasked *msg)
+BOOL VampireGFXCl__Hidd_Gfx__CopyBoxMasked(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_CopyBoxMasked *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
 
     LOCK_HW
     WaitBlitter(csd);
@@ -839,9 +839,9 @@ BOOL SAGAGFXCl__Hidd_Gfx__CopyBoxMasked(OOP_Class *cl, OOP_Object *o, struct pHi
     return OOP_DoSuperMethod(cl, o, (OOP_Msg)msg);
 }
 
-BOOL SAGAGFXCl__Hidd_Gfx__SetCursorShape(OOP_Class *cl, OOP_Object *shape, struct pHidd_Gfx_SetCursorShape *msg)
+BOOL VampireGFXCl__Hidd_Gfx__SetCursorShape(OOP_Class *cl, OOP_Object *shape, struct pHidd_Gfx_SetCursorShape *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
     OOP_Object *cm = NULL;
     IPTR width, height;
     WORD x, y, hiressprite, i;
@@ -917,9 +917,9 @@ pix2 <<= 1;
     return TRUE;
 }
 
-BOOL SAGAGFXCl__Hidd_Gfx__SetCursorPos(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_SetCursorPos *msg)
+BOOL VampireGFXCl__Hidd_Gfx__SetCursorPos(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_SetCursorPos *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
 
     LOCK_HW
     pw(csd->boardinfo + PSSO_BoardInfo_MouseX, msg->x + (BYTE)csd->boardinfo[PSSO_BoardInfo_MouseXOffset]);
@@ -929,18 +929,18 @@ BOOL SAGAGFXCl__Hidd_Gfx__SetCursorPos(OOP_Class *cl, OOP_Object *o, struct pHid
 
     return TRUE;
 }
-VOID SAGAGFXCl__Hidd_Gfx__SetCursorVisible(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_SetCursorVisible *msg)
+VOID VampireGFXCl__Hidd_Gfx__SetCursorVisible(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_SetCursorVisible *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
 
     LOCK_HW
     SetSprite(csd, msg->visible);
     UNLOCK_HW
 }
 
-BOOL SAGAGFXCl__Hidd_Gfx__CheckMode(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_CheckMode *msg)
+BOOL VampireGFXCl__Hidd_Gfx__CheckMode(OOP_Class *cl, OOP_Object *o, struct pHidd_Gfx_CheckMode *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
+    struct vampiregfx_staticdata *csd = CSD(cl);
     IPTR width, height, bpp;
 
     OOP_GetAttr(msg->sync, aHidd_Sync_HDisp, &width);
@@ -954,10 +954,10 @@ BOOL SAGAGFXCl__Hidd_Gfx__CheckMode(OOP_Class *cl, OOP_Object *o, struct pHidd_G
 }
 
 
-static void freeattrbases(LIBBASETYPEPTR LIBBASE, struct sagagfx_staticdata *csd)
+static void freeattrbases(LIBBASETYPEPTR LIBBASE, struct vampiregfx_staticdata *csd)
 {
     OOP_ReleaseAttrBase(IID_Hidd_BitMap);
-    OOP_ReleaseAttrBase(IID_Hidd_SAGAGFXBitMap);
+    OOP_ReleaseAttrBase(IID_Hidd_VampireGFXBitMap);
     OOP_ReleaseAttrBase(IID_Hidd_GC);
     OOP_ReleaseAttrBase(IID_Hidd_Sync);
     OOP_ReleaseAttrBase(IID_Hidd_Gfx);
@@ -989,7 +989,7 @@ static const struct P96RTGmode rtgmodes[] =
         { 0 }
 };
 /* real RTG only */
-static BOOL PopulateModeInfo(struct sagagfx_staticdata *csd, struct LibResolution *res, const struct P96RTGmode *mode)
+static BOOL PopulateModeInfo(struct vampiregfx_staticdata *csd, struct LibResolution *res, const struct P96RTGmode *mode)
 {
     UWORD rgbformat;
     BOOL ok = FALSE;
@@ -1045,7 +1045,7 @@ static BOOL PopulateModeInfo(struct sagagfx_staticdata *csd, struct LibResolutio
     }
     return ok;
 }
-static void PopulateResolutionList(struct sagagfx_staticdata *csd)
+static void PopulateResolutionList(struct vampiregfx_staticdata *csd)
 {
     struct LibResolution *node;
     UWORD cnt;
@@ -1067,7 +1067,7 @@ static void PopulateResolutionList(struct sagagfx_staticdata *csd)
     }
 }
 
-static int openall(struct sagagfx_staticdata *csd)
+static int openall(struct vampiregfx_staticdata *csd)
 {
     if ((csd->cs_UtilityBase = TaggedOpenLibrary(TAGGEDOPEN_UTILITY))) {
     	if ((csd->cs_IntuitionBase = TaggedOpenLibrary(TAGGEDOPEN_INTUITION))) {
@@ -1076,7 +1076,7 @@ static int openall(struct sagagfx_staticdata *csd)
     }
     return FALSE;
 }
-static void freeall(struct sagagfx_staticdata *csd)
+static void freeall(struct vampiregfx_staticdata *csd)
 {
     CloseLibrary(csd->cs_IntuitionBase);
     CloseLibrary(csd->cs_UtilityBase);
@@ -1086,7 +1086,7 @@ static void freeall(struct sagagfx_staticdata *csd)
     csd->boardinfo = NULL;
 }
 
-static void P96DebugInfo(struct sagagfx_staticdata *csd)
+static void P96DebugInfo(struct vampiregfx_staticdata *csd)
 {
     UBYTE i;
     DRTG(bug("Name:'%s'\n",
@@ -1110,7 +1110,7 @@ static void P96DebugInfo(struct sagagfx_staticdata *csd)
     }
 }
 
-static BOOL P96Init(struct sagagfx_staticdata *csd, struct Library *lib)
+static BOOL P96Init(struct vampiregfx_staticdata *csd, struct Library *lib)
 {
     DRTG(bug("P96GFX: attempting to init '%s'\n", lib->lib_Node.ln_Name));
     pl(csd->boardinfo + PSSO_BoardInfo_CardBase, (ULONG)lib);
@@ -1133,9 +1133,9 @@ static BOOL P96Init(struct sagagfx_staticdata *csd, struct Library *lib)
 }
 
 
-BOOL Init_SAGAGFXClass(LIBBASETYPEPTR LIBBASE)
+BOOL Init_VampireGFXClass(LIBBASETYPEPTR LIBBASE)
 {
-    struct sagagfx_staticdata *csd = &LIBBASE->csd;
+    struct vampiregfx_staticdata *csd = &LIBBASE->csd;
     struct MemChunk *mc;
     UBYTE i;
     struct Interrupt *intr;
@@ -1144,7 +1144,7 @@ BOOL Init_SAGAGFXClass(LIBBASETYPEPTR LIBBASE)
     if (!(SysBase->AttnFlags & AFF_68020))
     	return FALSE;
 
-    D(bug("Init_SAGAGFXClass\n"));
+    D(bug("Init_VampireGFXClass\n"));
     if (!openall(csd)) {
     	freeall(csd);
     	return FALSE;
@@ -1198,16 +1198,16 @@ BOOL Init_SAGAGFXClass(LIBBASETYPEPTR LIBBASE)
     if (!csd->CardBase) {
     	csd->romvector = (APTR)(0xf00000 + 0xff60);
     	if ((gl(csd->romvector) & 0xff00ffff) != 0xa0004e75) {
-	    D(bug("SAGA boot ROM entry point not found. SAGAGFX not enabled.\n"));
+	    D(bug("Vampire boot ROM entry point not found. VampireGFX not enabled.\n"));
 	    freeall(csd);
 	    return FALSE;
     	}
     	if (!FindCard(csd)) {
-    	    D(bug("SAGAGFX: FindCard() returned false\n"));
+    	    D(bug("VampireGFX: FindCard() returned false\n"));
     	    freeall(csd);
     	    return FALSE;
         }
-        D(bug("SAGAGFX: FindCard done\n"));
+        D(bug("VampireGFX: FindCard done\n"));
         InitCard(csd);
 	csd->hardwaresprite = (gl(csd->boardinfo + PSSO_BoardInfo_Flags) & (1 << BIB_HARDWARESPRITE)) && SetSprite(csd, FALSE);
     } else {
@@ -1252,7 +1252,7 @@ BOOL Init_SAGAGFXClass(LIBBASETYPEPTR LIBBASE)
     mc->mc_Bytes = csd->vmem->mh_Free;
 
     __IHidd_BitMap  	= OOP_ObtainAttrBase(IID_Hidd_BitMap);
-    __IHidd_SAGAGFXBitmap= OOP_ObtainAttrBase(IID_Hidd_SAGAGFXBitMap);
+    __IHidd_VampireGFXBitmap= OOP_ObtainAttrBase(IID_Hidd_VampireGFXBitMap);
     __IHidd_GC      	= OOP_ObtainAttrBase(IID_Hidd_GC);
     __IHidd_Sync    	= OOP_ObtainAttrBase(IID_Hidd_Sync);
     __IHidd_Gfx     	= OOP_ObtainAttrBase(IID_Hidd_Gfx);
@@ -1263,10 +1263,10 @@ BOOL Init_SAGAGFXClass(LIBBASETYPEPTR LIBBASE)
     HiddColorMapBase	= OOP_GetMethodID(IID_Hidd_ColorMap, 0);
     HiddGfxBase		= OOP_GetMethodID(IID_Hidd_Gfx, 0);
 
-    if (!__IHidd_BitMap || !__IHidd_SAGAGFXBitmap || !__IHidd_GC ||
+    if (!__IHidd_BitMap || !__IHidd_VampireGFXBitmap || !__IHidd_GC ||
     	!__IHidd_Sync || !__IHidd_Gfx || !__IHidd_PixFmt || !__IHidd_ColorMap)
     {
-    	D(bug("Init_SAGAGFXClass fail\n"));
+    	D(bug("Init_VampireGFXClass fail\n"));
     	freeattrbases(LIBBASE, csd);
     	freeall(csd);
     	return FALSE;
@@ -1276,16 +1276,16 @@ BOOL Init_SAGAGFXClass(LIBBASETYPEPTR LIBBASE)
     return TRUE;
 }
 
-static int Expunge_SAGAGFXClass(LIBBASETYPEPTR LIBBASE)
+static int Expunge_VampireGFXClass(LIBBASETYPEPTR LIBBASE)
 {
-    struct sagagfx_staticdata *csd = &LIBBASE->csd;
-    D(bug("Expunge_SAGAGFXClass\n"));
+    struct vampiregfx_staticdata *csd = &LIBBASE->csd;
+    D(bug("Expunge_VampireGFXClass\n"));
     freeattrbases(LIBBASE, csd);
     freeall(csd);
     return TRUE;
 }
 
-ADD2EXPUNGELIB(Expunge_SAGAGFXClass, 1)
+ADD2EXPUNGELIB(Expunge_VampireGFXClass, 1)
 
 #undef SysBase
 

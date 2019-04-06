@@ -1,9 +1,9 @@
 /* Semi-public definitions for GDI class */
 
-#define SAGAGFX_LIBNAME "sagagfx.hidd"
-#define CLID_Hidd_SAGAGfx "hidd.gfx.sagagfx"
+#define VampireGFX_LIBNAME "vampiregfx.hidd"
+#define CLID_Hidd_VampireGfx "hidd.gfx.vampiregfx"
 
-struct SAGAGFXBase
+struct VampireGFXBase
 {
     struct Library library;    /* Common library header */
 };

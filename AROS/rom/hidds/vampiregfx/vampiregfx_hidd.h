@@ -2,5 +2,5 @@
     Copyright © 2017, The Apollo Team. All rights reserved.
 */
 
-#define SAGAGFX_LIBNAME "sagagfx.hidd"
-#define CLID_Hidd_SAGAGfx "hidd.gfx.saga"
+#define VampireGFX_LIBNAME "vampiregfx.hidd"
+#define CLID_Hidd_VampireGfx "hidd.gfx.vampire"

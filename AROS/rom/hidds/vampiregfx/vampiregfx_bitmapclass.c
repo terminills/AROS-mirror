@@ -28,11 +28,11 @@
 
 #include LC_LIBDEFS_FILE
 
-#include "sagagfx_intern.h"
-#include "sagagfx_bitmap.h"
-#include "sagartg.h"
+#include "vampiregfx_intern.h"
+#include "vampiregfx_bitmap.h"
+#include "vampirertg.h"
 
-static void hidescreen(struct sagagfx_staticdata *csd, struct bm_data *bm)
+static void hidescreen(struct vampiregfx_staticdata *csd, struct bm_data *bm)
 {
     D(bug("Hide %p: (%p:%d)\n",
 	bm, bm->VideoData, bm->memsize));
@@ -46,15 +46,15 @@ static void hidescreen(struct sagagfx_staticdata *csd, struct bm_data *bm)
 
 /****************************************************************************************/
 
-OOP_Object *SAGAGFXBitmap__Root__New(OOP_Class *cl, OOP_Object *o, struct pRoot_New *msg)
+OOP_Object *VampireGFXBitmap__Root__New(OOP_Class *cl, OOP_Object *o, struct pRoot_New *msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
-    struct sagabm_data *data;
+    struct vampiregfx_staticdata *csd = CSD(cl);
+    struct vampirebm_data *data;
     struct BitMap *pbm = NULL;
     IPTR width, height, depth, displayable;
     struct TagItem tags[2];
 
-    DB2(bug("SAGAGFXBitmap__Root_New\n"));
+    DB2(bug("VampireGFXBitmap__Root_New\n"));
 
     if ((o = (OOP_Object *)OOP_DoSuperMethod(cl, o, (OOP_Msg)msg)))
     {
@@ -115,17 +115,17 @@ OOP_Object *SAGAGFXBitmap__Root__New(OOP_Class *cl, OOP_Object *o, struct pRoot_
     return o;
 }
 
-VOID SAGAGFXBitmap__Root__Dispose(OOP_Class *cl, OOP_Object *o, OOP_Msg msg)
+VOID VampireGFXBitmap__Root__Dispose(OOP_Class *cl, OOP_Object *o, OOP_Msg msg)
 {
-    struct sagagfx_staticdata *csd = CSD(cl);
-    struct sagabm_data *data;
+    struct vampiregfx_staticdata *csd = CSD(cl);
+    struct vampirebm_data *data;
 
     data = OOP_INST_DATA(cl, o);
 
     LOCK_HW
     WaitBlitter(csd);
 
-    DB2(bug("SAGAGFXBitmap__Root__Dispose %x bm=%x\n", o, data));
+    DB2(bug("VampireGFXBitmap__Root__Dispose %x bm=%x\n", o, data));
 
     if (data->disp == data)
     {
@@ -151,53 +151,53 @@ VOID SAGAGFXBitmap__Root__Dispose(OOP_Class *cl, OOP_Object *o, OOP_Msg msg)
     OOP_DoSuperMethod(cl, o, msg);
 }
 
-VOID SAGAGFXBitmap__Root__Set(OOP_Class *cl, OOP_Object *o, struct pRoot_Set *msg)
+VOID VampireGFXBitmap__Root__Set(OOP_Class *cl, OOP_Object *o, struct pRoot_Set *msg)
 {
 
 }
 
-VOID SAGAGFXBitmap__Root__Get(OOP_Class *cl, OOP_Object *o, struct pRoot_Get *msg)
+VOID VampireGFXBitmap__Root__Get(OOP_Class *cl, OOP_Object *o, struct pRoot_Get *msg)
 {
 
 }
 
 /****************************************************************************************/
 
-static int SAGAGFXBitmap_Init(LIBBASETYPEPTR LIBBASE)
+static int VampireGFXBitmap_Init(LIBBASETYPEPTR LIBBASE)
 {
-    D(bug("SAGAGFXBitmap_Init\n"));
+    D(bug("VampireGFXBitmap_Init\n"));
     return TRUE;
 }
 
 /****************************************************************************************/
 
-static int SAGAGFXBitmap_Expunge(LIBBASETYPEPTR LIBBASE)
+static int VampireGFXBitmap_Expunge(LIBBASETYPEPTR LIBBASE)
 {
-    D(bug("SAGAGFXBitmap_Expunge\n"));
+    D(bug("VampireGFXBitmap_Expunge\n"));
     return TRUE;
 }
 
 /****************************************************************************************/
 
-ADD2INITLIB(SAGAGFXBitmap_Init, 0);
-ADD2EXPUNGELIB(SAGAGFXBitmap_Expunge, 0);
+ADD2INITLIB(VampireGFXBitmap_Init, 0);
+ADD2EXPUNGELIB(VampireGFXBitmap_Expunge, 0);
 
-BOOL SAGAGFXBitmap__Hidd_BitMap__ObtainDirectAccess(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_ObtainDirectAccess *msg)
+BOOL VampireGFXBitmap__Hidd_BitMap__ObtainDirectAccess(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_ObtainDirectAccess *msg)
 {
     return TRUE;
 }
 
-VOID SAGAGFXBitmap__Hidd_BitMap__ReleaseDirectAccess(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_ReleaseDirectAccess *msg)
+VOID VampireGFXBitmap__Hidd_BitMap__ReleaseDirectAccess(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_ReleaseDirectAccess *msg)
 {
 
 }
 
-BOOL SAGAGFXBitmap__Hidd_BitMap__SetColors(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_SetColors *msg)
+BOOL VampireGFXBitmap__Hidd_BitMap__SetColors(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_SetColors *msg)
 {
 	return FALSE;
 }
 
-VOID SAGAGFXBitmap__Hidd_BitMap__PutPixel(OOP_Class *cl, OOP_Object *o,
+VOID VampireGFXBitmap__Hidd_BitMap__PutPixel(OOP_Class *cl, OOP_Object *o,
 				struct pHidd_BitMap_PutPixel *msg)
 {
 
@@ -205,7 +205,7 @@ VOID SAGAGFXBitmap__Hidd_BitMap__PutPixel(OOP_Class *cl, OOP_Object *o,
 
 /****************************************************************************************/
 
-ULONG SAGAGFXBitmap__Hidd_BitMap__GetPixel(OOP_Class *cl, OOP_Object *o,
+ULONG VampireGFXBitmap__Hidd_BitMap__GetPixel(OOP_Class *cl, OOP_Object *o,
 				 struct pHidd_BitMap_GetPixel *msg)
 {
 	return 0;
@@ -213,7 +213,7 @@ ULONG SAGAGFXBitmap__Hidd_BitMap__GetPixel(OOP_Class *cl, OOP_Object *o,
 
 /****************************************************************************************/
 
-VOID SAGAGFXBitmap__Hidd_BitMap__DrawLine(OOP_Class *cl, OOP_Object *o,
+VOID VampireGFXBitmap__Hidd_BitMap__DrawLine(OOP_Class *cl, OOP_Object *o,
 				struct pHidd_BitMap_DrawLine *msg)
 {
 
@@ -221,14 +221,14 @@ VOID SAGAGFXBitmap__Hidd_BitMap__DrawLine(OOP_Class *cl, OOP_Object *o,
 
 /****************************************************************************************/
 
-VOID SAGAGFXBitmap__Hidd_BitMap__GetImage(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_GetImage *msg)
+VOID VampireGFXBitmap__Hidd_BitMap__GetImage(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_GetImage *msg)
 {
 
 }
 
 /****************************************************************************************/
 
-VOID SAGAGFXBitmap__Hidd_BitMap__PutImage(OOP_Class *cl, OOP_Object *o,
+VOID VampireGFXBitmap__Hidd_BitMap__PutImage(OOP_Class *cl, OOP_Object *o,
 				struct pHidd_BitMap_PutImage *msg)
 {
 
@@ -236,7 +236,7 @@ VOID SAGAGFXBitmap__Hidd_BitMap__PutImage(OOP_Class *cl, OOP_Object *o,
 
 /****************************************************************************************/
 
-VOID SAGAGFXBitmap__Hidd_BitMap__PutImageLUT(OOP_Class *cl, OOP_Object *o,
+VOID VampireGFXBitmap__Hidd_BitMap__PutImageLUT(OOP_Class *cl, OOP_Object *o,
 				   struct pHidd_BitMap_PutImageLUT *msg)
 {
 
@@ -244,7 +244,7 @@ VOID SAGAGFXBitmap__Hidd_BitMap__PutImageLUT(OOP_Class *cl, OOP_Object *o,
 
 /****************************************************************************************/
 
-VOID SAGAGFXBitmap__Hidd_BitMap__GetImageLUT(OOP_Class *cl, OOP_Object *o,
+VOID VampireGFXBitmap__Hidd_BitMap__GetImageLUT(OOP_Class *cl, OOP_Object *o,
 				   struct pHidd_BitMap_GetImageLUT *msg)
 {
 
@@ -252,14 +252,14 @@ VOID SAGAGFXBitmap__Hidd_BitMap__GetImageLUT(OOP_Class *cl, OOP_Object *o,
 
 /****************************************************************************************/
 
-VOID SAGAGFXBitmap__Hidd_BitMap__FillRect(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_DrawRect *msg)
+VOID VampireGFXBitmap__Hidd_BitMap__FillRect(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_DrawRect *msg)
 {
 
 }
 
 /****************************************************************************************/
 
-VOID SAGAGFXBitmap__Hidd_BitMap__PutPattern(OOP_Class *cl, OOP_Object *o,
+VOID VampireGFXBitmap__Hidd_BitMap__PutPattern(OOP_Class *cl, OOP_Object *o,
 				 struct pHidd_BitMap_PutPattern *msg)
 {
 
@@ -267,21 +267,21 @@ VOID SAGAGFXBitmap__Hidd_BitMap__PutPattern(OOP_Class *cl, OOP_Object *o,
 
 /****************************************************************************************/
 
-VOID SAGAGFXBitmap__Hidd_BitMap__PutTemplate(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_PutTemplate *msg)
+VOID VampireGFXBitmap__Hidd_BitMap__PutTemplate(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_PutTemplate *msg)
 {
 
 }
 
 /****************************************************************************************/
 
-VOID SAGAGFXBitmap__Hidd_BitMap__UpdateRect(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_UpdateRect *msg)
+VOID VampireGFXBitmap__Hidd_BitMap__UpdateRect(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_UpdateRect *msg)
 {
 
 }
 
 /****************************************************************************************/
 
-BOOL SAGAGFXBitmap__Hidd_PlanarBM__SetBitMap(OOP_Class *cl, OOP_Object *o,
+BOOL VampireGFXBitmap__Hidd_PlanarBM__SetBitMap(OOP_Class *cl, OOP_Object *o,
 				   struct pHidd_PlanarBM_SetBitMap *msg)
 {
 	return FALSE;
@@ -289,7 +289,7 @@ BOOL SAGAGFXBitmap__Hidd_PlanarBM__SetBitMap(OOP_Class *cl, OOP_Object *o,
 
 /****************************************************************************************/
 
-BOOL SAGAGFXBitmap__Hidd_PlanarBM__GetBitMap(OOP_Class *cl, OOP_Object *o,
+BOOL VampireGFXBitmap__Hidd_PlanarBM__GetBitMap(OOP_Class *cl, OOP_Object *o,
 				   struct pHidd_PlanarBM_GetBitMap *msg)
 {
 	return FALSE;

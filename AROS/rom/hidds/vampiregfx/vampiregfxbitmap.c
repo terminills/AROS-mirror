@@ -18,86 +18,86 @@
 #include <hidd/graphics.h>
 #include <aros/symbolsets.h>
 
-#include "sagagfx.h"
-#include "sagagfxbitmap.h"
+#include "vampiregfx.h"
+#include "vampiregfxbitmap.h"
 
-static APTR allocrtgvrambitmap(struct sagagfx_staticdata *csd, struct bm_data *bm)
+static APTR allocrtgvrambitmap(struct vampiregfx_staticdata *csd, struct bm_data *bm)
 {
 
 }
 
-static void freertgbitmap(struct sagagfx_staticdata *csd, struct bm_data *bm)
+static void freertgbitmap(struct vampiregfx_staticdata *csd, struct bm_data *bm)
 {
 
 }
 
-static BOOL movebitmaptofram(struct sagagfx_staticdata *csd, struct bm_data *bm)
+static BOOL movebitmaptofram(struct vampiregfx_staticdata *csd, struct bm_data *bm)
 {
 
 }
 
-static BOOL allocrtgbitmap(struct sagagfx_staticdata *csd, struct bm_data *bm, BOOL usevram)
+static BOOL allocrtgbitmap(struct vampiregfx_staticdata *csd, struct bm_data *bm, BOOL usevram)
 {
 
 }
 
-static BOOL movethisbitmaptovram(struct sagagfx_staticdata *csd, struct bm_data *bm)
+static BOOL movethisbitmaptovram(struct vampiregfx_staticdata *csd, struct bm_data *bm)
 {
 
 }
 
-static BOOL movebitmaptovram(struct sagagfx_staticdata *csd, struct bm_data *bm)
+static BOOL movebitmaptovram(struct vampiregfx_staticdata *csd, struct bm_data *bm)
 {
 
 }
 
-static void hidescreen(struct sagagfx_staticdata *csd, struct bm_data *bm)
-{
-
-}
-
-/****************************************************************************************/
-
-OOP_Object *SAGAGFXBitmap__Root__New(OOP_Class *cl, OOP_Object *o, struct pRoot_New *msg)
-{
-
-}
-
-VOID SAGAGFXBitmap__Root__Dispose(OOP_Class *cl, OOP_Object *o, OOP_Msg msg)
-{
-
-}
-
-VOID SAGAGFXBitmap__Root__Set(OOP_Class *cl, OOP_Object *o, struct pRoot_Set *msg)
-{
-
-}
-
-VOID SAGAGFXBitmap__Root__Get(OOP_Class *cl, OOP_Object *o, struct pRoot_Get *msg)
+static void hidescreen(struct vampiregfx_staticdata *csd, struct bm_data *bm)
 {
 
 }
 
 /****************************************************************************************/
 
-static int SAGAGFXBitmap_Init(LIBBASETYPEPTR LIBBASE)
+OOP_Object *VampireGFXBitmap__Root__New(OOP_Class *cl, OOP_Object *o, struct pRoot_New *msg)
+{
+
+}
+
+VOID VampireGFXBitmap__Root__Dispose(OOP_Class *cl, OOP_Object *o, OOP_Msg msg)
+{
+
+}
+
+VOID VampireGFXBitmap__Root__Set(OOP_Class *cl, OOP_Object *o, struct pRoot_Set *msg)
+{
+
+}
+
+VOID VampireGFXBitmap__Root__Get(OOP_Class *cl, OOP_Object *o, struct pRoot_Get *msg)
 {
 
 }
 
 /****************************************************************************************/
 
-static int SAGAGFXBitmap_Expunge(LIBBASETYPEPTR LIBBASE)
+static int VampireGFXBitmap_Init(LIBBASETYPEPTR LIBBASE)
 {
 
 }
 
 /****************************************************************************************/
 
-ADD2INITLIB(SAGAGFXBitmap_Init, 0);
-ADD2EXPUNGELIB(SAGAGFXBitmap_Expunge, 0);
+static int VampireGFXBitmap_Expunge(LIBBASETYPEPTR LIBBASE)
+{
 
-BOOL SAGAGFXBitmap__Hidd_BitMap__ObtainDirectAccess(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_ObtainDirectAccess *msg)
+}
+
+/****************************************************************************************/
+
+ADD2INITLIB(VampireGFXBitmap_Init, 0);
+ADD2EXPUNGELIB(VampireGFXBitmap_Expunge, 0);
+
+BOOL VampireGFXBitmap__Hidd_BitMap__ObtainDirectAccess(OOP_Class *cl, OOP_Object *o, struct pHidd_BitMap_ObtainDirectAccess *msg)
 {
 
 }

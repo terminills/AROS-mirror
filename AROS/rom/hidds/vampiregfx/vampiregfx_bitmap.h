@@ -2,16 +2,16 @@
     Copyright © 2017, The Apollo Team. All rights reserved.
 */
 
-#ifndef _SAGAGFXBITMAP_H
-#define _SAGAGFXBITMAP_H
+#ifndef _VampireGFXBITMAP_H
+#define _VampireGFXBITMAP_H
 
-#define IID_Hidd_SAGAGFXBitMap "hidd.bitmap.saga"
+#define IID_Hidd_VampireGFXBitMap "hidd.bitmap.vampire"
 
-#include "sagartg.h"
+#include "vampirertg.h"
 
 /* This structure is used as instance data for the bitmap class. */
 
-struct sagabm_data
+struct vampirebm_data
 {
     struct MinNode node;
     struct SignalSemaphore bmLock;

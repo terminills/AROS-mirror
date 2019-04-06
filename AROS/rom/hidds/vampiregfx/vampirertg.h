@@ -2,8 +2,8 @@
     Copyright © 2017, The Apollo Team. All rights reserved.
 */
 
-#ifndef SAGAGFX_SAGARTG_H
-#define SAGAGFX_SAGARTG_H
+#ifndef VampireGFX_VampireRTG_H
+#define VampireGFX_VampireRTG_H
 
 /* Types for RGBFormat used */
 typedef enum {
@@ -330,9 +330,9 @@ struct ModeInfo {
 #define PSSO_BoardInfo_SizeOf			    PSSO_BoardInfo_AROSFlag + 4
 
 WORD getrtgdepth (ULONG rgbformat);
-ULONG getrtgformat(struct sagagfx_staticdata *csd, OOP_Object *);
-void makerenderinfo(struct sagagfx_staticdata *csd, struct RenderInfo*, struct bm_data*);
-struct ModeInfo *getrtgmodeinfo(struct sagagfx_staticdata *csd, OOP_Object *sync, OOP_Object *pixfmt, struct ModeInfo *modeinfo);
+ULONG getrtgformat(struct vampiregfx_staticdata *csd, OOP_Object *);
+void makerenderinfo(struct vampiregfx_staticdata *csd, struct RenderInfo*, struct bm_data*);
+struct ModeInfo *getrtgmodeinfo(struct vampiregfx_staticdata *csd, OOP_Object *sync, OOP_Object *pixfmt, struct ModeInfo *modeinfo);
 
 APTR  gp(UBYTE *p);
 ULONG gl(UBYTE *p);
@@ -344,36 +344,36 @@ void pb(UBYTE *p, BYTE b);
 
 extern const UBYTE modetable[16];
 
-BOOL FindCard(struct sagagfx_staticdata *csd);
-BOOL InitCard(struct sagagfx_staticdata *csd);
-BOOL SetDisplay(struct sagagfx_staticdata *csd, BOOL state);
-BOOL SetSwitch(struct sagagfx_staticdata *csd, BOOL state);
-void SetColorArray(struct sagagfx_staticdata *csd, UWORD start, UWORD count);
-void SetDAC(struct sagagfx_staticdata *csd);
-void SetGC(struct sagagfx_staticdata *csd, struct ModeInfo *mi, BOOL border);
-void SetPanning(struct sagagfx_staticdata *csd, UBYTE *video, UWORD width, WORD x, WORD y);
-BOOL FillRect(struct sagagfx_staticdata *csd, struct RenderInfo *ri, WORD x, WORD y, WORD w, WORD h, ULONG pen, UBYTE mask, ULONG rgbformat);
-BOOL InvertRect(struct sagagfx_staticdata *csd, struct RenderInfo *ri, WORD x, WORD y, WORD w, WORD h, UBYTE mask, ULONG rgbformat);
-BOOL BlitRectNoMaskComplete(struct sagagfx_staticdata *csd, struct RenderInfo *risrc, struct RenderInfo *ridst,
+BOOL FindCard(struct vampiregfx_staticdata *csd);
+BOOL InitCard(struct vampiregfx_staticdata *csd);
+BOOL SetDisplay(struct vampiregfx_staticdata *csd, BOOL state);
+BOOL SetSwitch(struct vampiregfx_staticdata *csd, BOOL state);
+void SetColorArray(struct vampiregfx_staticdata *csd, UWORD start, UWORD count);
+void SetDAC(struct vampiregfx_staticdata *csd);
+void SetGC(struct vampiregfx_staticdata *csd, struct ModeInfo *mi, BOOL border);
+void SetPanning(struct vampiregfx_staticdata *csd, UBYTE *video, UWORD width, WORD x, WORD y);
+BOOL FillRect(struct vampiregfx_staticdata *csd, struct RenderInfo *ri, WORD x, WORD y, WORD w, WORD h, ULONG pen, UBYTE mask, ULONG rgbformat);
+BOOL InvertRect(struct vampiregfx_staticdata *csd, struct RenderInfo *ri, WORD x, WORD y, WORD w, WORD h, UBYTE mask, ULONG rgbformat);
+BOOL BlitRectNoMaskComplete(struct vampiregfx_staticdata *csd, struct RenderInfo *risrc, struct RenderInfo *ridst,
     WORD sx, WORD sy, WORD dx, WORD dy, WORD w, WORD h, UBYTE opcode, ULONG rgbformat);
-BOOL BlitPattern(struct sagagfx_staticdata *csd, struct RenderInfo *ri, struct Pattern *pat,
+BOOL BlitPattern(struct vampiregfx_staticdata *csd, struct RenderInfo *ri, struct Pattern *pat,
     WORD x, WORD y, WORD w, WORD h, UBYTE mask, ULONG rgbformat);
-BOOL BlitTemplate(struct sagagfx_staticdata *csd, struct RenderInfo *ri, struct Template *tmpl,
+BOOL BlitTemplate(struct vampiregfx_staticdata *csd, struct RenderInfo *ri, struct Template *tmpl,
     WORD x, WORD y, WORD w, WORD h, UBYTE mask, ULONG rgbformat);
 
-WORD CalculateBytesPerRow(struct sagagfx_staticdata *csd, WORD width, ULONG rgbformat);
-BOOL SetSprite(struct sagagfx_staticdata *sd, BOOL activate);
-BOOL SetSpritePosition(struct sagagfx_staticdata *sd);
-BOOL SetSpriteImage(struct sagagfx_staticdata *sd);
-BOOL SetSpriteColor(struct sagagfx_staticdata *sd, UBYTE idx, UBYTE r, UBYTE g, UBYTE b);
+WORD CalculateBytesPerRow(struct vampiregfx_staticdata *csd, WORD width, ULONG rgbformat);
+BOOL SetSprite(struct vampiregfx_staticdata *sd, BOOL activate);
+BOOL SetSpritePosition(struct vampiregfx_staticdata *sd);
+BOOL SetSpriteImage(struct vampiregfx_staticdata *sd);
+BOOL SetSpriteColor(struct vampiregfx_staticdata *sd, UBYTE idx, UBYTE r, UBYTE g, UBYTE b);
 
 /* real RTG only functions */
-ULONG GetPixelClock(struct sagagfx_staticdata *csd, struct ModeInfo *mi, ULONG index, ULONG rgbformat);
-ULONG ResolvePixelClock(struct sagagfx_staticdata *csd, struct ModeInfo *mi, ULONG pixelclock, ULONG rgbformat);
-ULONG SetClock(struct sagagfx_staticdata *csd);
-void SetMemoryMode(struct sagagfx_staticdata *csd, ULONG rgbformat);
-void WaitBlitter(struct sagagfx_staticdata *csd);
-void SetInterrupt(struct sagagfx_staticdata *csd, ULONG state);
+ULONG GetPixelClock(struct vampiregfx_staticdata *csd, struct ModeInfo *mi, ULONG index, ULONG rgbformat);
+ULONG ResolvePixelClock(struct vampiregfx_staticdata *csd, struct ModeInfo *mi, ULONG pixelclock, ULONG rgbformat);
+ULONG SetClock(struct vampiregfx_staticdata *csd);
+void SetMemoryMode(struct vampiregfx_staticdata *csd, ULONG rgbformat);
+void WaitBlitter(struct vampiregfx_staticdata *csd);
+void SetInterrupt(struct vampiregfx_staticdata *csd, ULONG state);
 void InitRTG(APTR boardinfo);
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef HIDD_SAGA_H
-#define HIDD_SAGA_H
+#ifndef HIDD_Vampire_H
+#define HIDD_Vampire_H
 
 #include <exec/libraries.h>
 #include <oop/oop.h>
@@ -7,11 +7,11 @@
 #include <exec/interrupts.h>
 #include <graphics/gfxbase.h>
 
-#include "sagagfxclass.h"
+#include "vampiregfxclass.h"
 
 #define __IHidd_BitMap		(csd->hiddBitMapAttrBase)
 #define __IHidd_PlanarBM	(csd->hiddPlanarBitMapAttrBase)
-#define __IHidd_SAGABitmap	(csd->hiddSAGABitmapAttrBase)
+#define __IHidd_VampireBitmap	(csd->hiddVampireBitmapAttrBase)
 #define __IHidd_GC		(csd->hiddGCAttrBase)
 #define __IHidd_Sync		(csd->hiddSyncAttrBase)
 #define __IHidd_PixFmt		(csd->hiddPixFmtAttrBase)
@@ -27,7 +27,7 @@
 
 #define UtilityBase	((csd)->cs_UtilityBase) 
 
-struct SAGAGFXMode
+struct VampireGFXMode
 {
 	Struct Node node;
 	ULONG modeid;
@@ -36,14 +36,14 @@ struct SAGAGFXMode
 	OOP_Object *sync;
 };
 
-struct sagagfx_staticdata
+struct vampiregfx_staticdata
 {
     OOP_Class		*basebm;	/* baseclass for CreateObject */
     OOP_Class		*gfxclass;
     OOP_Class		*bmclass;
 
 	OOP_AttrBase hiddBitMapAttrBase;
-	OOP_AttrBase hiddSAGABitMapAttrBase;
+	OOP_AttrBase hiddVampireBitMapAttrBase;
 	OOP_AttrBase hiddGCAttrBase;
 	OOP_AttrBase hiddSyncAttrBase;
 	OOP_AttrBase hiddPixFmtAttrBase;
@@ -120,5 +120,5 @@ struct gfx_data
 	struct MinList bitmaps;		/* Currently shown bitmap objects */
 };
 
-#endif /* HIDD_SAGA_H */
+#endif /* HIDD_Vampire_H */
 

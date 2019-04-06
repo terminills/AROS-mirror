@@ -12,24 +12,24 @@
 #include <proto/graphics.h>
 #include <proto/oop.h>
 
-#include "sagagfx_intern.h"
-#include "sagagfx_bitmap.h"
+#include "vampiregfx_intern.h"
+#include "vampiregfx_bitmap.h"
 
 #include LC_LIBDEFS_FILE
 
-BOOL Init_SAGAGFXClass(LIBBASETYPEPTR LIBBASE);
+BOOL Init_VampireGFXClass(LIBBASETYPEPTR LIBBASE);
 
 #undef SysBase
 #undef OOPBase
 
-static int SAGAGFX_Init(LIBBASETYPEPTR LIBBASE)
+static int VampireGFX_Init(LIBBASETYPEPTR LIBBASE)
 {
     ULONG err;
     struct ExecBase *SysBase = (LIBBASE)->csd.cs_SysBase;
     struct Library  *GfxBase = TaggedOpenLibrary(TAGGEDOPEN_GRAPHICS);
     struct Library  *OOPBase = OpenLibrary("oop.library", 0);
 
-    D(bug("**************************** SAGAGFX_Init ******************************\n"));
+    D(bug("**************************** VampireGFX_Init ******************************\n"));
 
     if (!GfxBase)
         return FALSE;
@@ -37,7 +37,7 @@ static int SAGAGFX_Init(LIBBASETYPEPTR LIBBASE)
     LIBBASE->csd.basebm = OOP_FindClass(CLID_Hidd_BitMap);
     CloseLibrary(OOPBase);
 
-    if (!Init_SAGAGFXClass(LIBBASE)) {
+    if (!Init_VampireGFXClass(LIBBASE)) {
         CloseLibrary(GfxBase);
         return FALSE;
     }
@@ -51,8 +51,8 @@ static int SAGAGFX_Init(LIBBASETYPEPTR LIBBASE)
 
     CloseLibrary(GfxBase);
 
-    D(bug("SAGAHIDD AddDisplayDriver() result: %u\n", err));
+    D(bug("VampireHIDD AddDisplayDriver() result: %u\n", err));
     return err ? FALSE : TRUE;
 }
 
-ADD2INITLIB(SAGAGFX_Init, 0)
+ADD2INITLIB(VampireGFX_Init, 0)

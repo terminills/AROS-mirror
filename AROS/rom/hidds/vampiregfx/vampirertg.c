@@ -10,12 +10,12 @@
 #include <aros/symbolsets.h>
 #include <oop/oop.h>
 
-#include "sagagfx_intern.h"
-#include "sagagfx_bitmap.h"
-#include "sagartg.h"
+#include "vampiregfx_intern.h"
+#include "vampiregfx_bitmap.h"
+#include "vampirertg.h"
 #include "../uaegfx/p96call.h"
 
-static APTR gptr(struct sagagfx_staticdata *csd, WORD offset)
+static APTR gptr(struct vampiregfx_staticdata *csd, WORD offset)
 {
     APTR code = (APTR)((ULONG*)(((UBYTE*)(csd->boardinfo)) + offset))[0];
     D(bug("->RTG off=%d code=%p\n", (offset - (PSSO_BoardInfo_AllocCardMem)) / 4, code));
@@ -52,17 +52,17 @@ void InitRTG(APTR boardinfo)
 	pl(boardinfo + i, (ULONG)RTGCall_Default);
 }
 
-BOOL FindCard(struct sagagfx_staticdata *csd)
+BOOL FindCard(struct vampiregfx_staticdata *csd)
 {
     if (csd->CardBase)
 	return AROS_LVO_CALL1(BOOL,
 	    AROS_LCA(APTR, csd->boardinfo, A0),
     	    struct Library*, csd->CardBase, 5, );
     else
-	return FALSE;  //P96_LC1(BOOL, csd->sagaromvector, 16,
+	return FALSE;  //P96_LC1(BOOL, csd->vampireromvector, 16,
     	    //AROS_LCA(APTR, csd->boardinfo, A0));
 }
-BOOL InitCard(struct sagagfx_staticdata *csd)
+BOOL InitCard(struct vampiregfx_staticdata *csd)
 {
     if (csd->CardBase)
 	return AROS_LVO_CALL2(BOOL,
@@ -70,12 +70,12 @@ BOOL InitCard(struct sagagfx_staticdata *csd)
 	    AROS_LCA(APTR, NULL, A1),
     	    struct Library*, csd->CardBase, 6, );
    else
-	return FALSE;  //P96_LC2(BOOL, csd->sagaromvector, 29,
+	return FALSE;  //P96_LC2(BOOL, csd->vampireromvector, 29,
 	    //AROS_LCA(APTR, csd->boardinfo, A0),       // For current WinUAEs
 	    //AROS_LCA(APTR, csd->boardinfo, A2));      // For older E-UAEs
 }
 
-void WaitBlitter(struct sagagfx_staticdata *csd)
+void WaitBlitter(struct vampiregfx_staticdata *csd)
 {
     if (csd->CardBase)
     	AROS_CALL1NR(void, gptr(csd, PSSO_BoardInfo_WaitBlitter),
@@ -83,7 +83,7 @@ void WaitBlitter(struct sagagfx_staticdata *csd)
     	    struct Library*, csd->CardBase);
 }
 
-void SetInterrupt(struct sagagfx_staticdata *csd, ULONG state)
+void SetInterrupt(struct vampiregfx_staticdata *csd, ULONG state)
 {
     if (csd->CardBase)
 	AROS_CALL2(ULONG, gptr(csd, PSSO_BoardInfo_SetInterrupt),
@@ -92,7 +92,7 @@ void SetInterrupt(struct sagagfx_staticdata *csd, ULONG state)
     	    struct Library*, csd->CardBase);
 }
 
-ULONG GetPixelClock(struct sagagfx_staticdata *csd, struct ModeInfo *mi, ULONG index, ULONG rgbformat)
+ULONG GetPixelClock(struct vampiregfx_staticdata *csd, struct ModeInfo *mi, ULONG index, ULONG rgbformat)
 {
     if (csd->CardBase)
     	return AROS_CALL4(ULONG, gptr(csd, PSSO_BoardInfo_GetPixelClock),
@@ -105,7 +105,7 @@ ULONG GetPixelClock(struct sagagfx_staticdata *csd, struct ModeInfo *mi, ULONG i
     	return -2;
 }
 
-void SetMemoryMode(struct sagagfx_staticdata *csd, ULONG rgbformat)
+void SetMemoryMode(struct vampiregfx_staticdata *csd, ULONG rgbformat)
 {
     if (csd->CardBase)
 	AROS_CALL2(ULONG, gptr(csd, PSSO_BoardInfo_SetMemoryMode),
@@ -114,7 +114,7 @@ void SetMemoryMode(struct sagagfx_staticdata *csd, ULONG rgbformat)
     	    struct Library*, csd->CardBase);
 }
 
-ULONG ResolvePixelClock(struct sagagfx_staticdata *csd, struct ModeInfo *mi, ULONG pixelclock, ULONG rgbformat)
+ULONG ResolvePixelClock(struct vampiregfx_staticdata *csd, struct ModeInfo *mi, ULONG pixelclock, ULONG rgbformat)
 {
     if (csd->CardBase)
     	return AROS_CALL4(ULONG, gptr(csd, PSSO_BoardInfo_ResolvePixelClock),
@@ -126,7 +126,7 @@ ULONG ResolvePixelClock(struct sagagfx_staticdata *csd, struct ModeInfo *mi, ULO
     else
     	return -2;
 }
-ULONG SetClock(struct sagagfx_staticdata *csd)
+ULONG SetClock(struct vampiregfx_staticdata *csd)
 {
     if (csd->CardBase)
     	return AROS_CALL1(ULONG, gptr(csd, PSSO_BoardInfo_SetClock),
@@ -135,7 +135,7 @@ ULONG SetClock(struct sagagfx_staticdata *csd)
     else
     	return -2;
 }
-BOOL SetDisplay(struct sagagfx_staticdata *csd, BOOL state)
+BOOL SetDisplay(struct vampiregfx_staticdata *csd, BOOL state)
 {
     if (csd->CardBase)
     	return AROS_CALL2(BOOL, gptr(csd, PSSO_BoardInfo_SetDisplay),
@@ -143,11 +143,11 @@ BOOL SetDisplay(struct sagagfx_staticdata *csd, BOOL state)
     	    AROS_LCA(BOOL, state, D0),
     	    struct Library*, csd->CardBase);
     else
-	return FALSE;  //P96_LC2(BOOL, csd->sagaromvector, 26,
+	return FALSE;  //P96_LC2(BOOL, csd->vampireromvector, 26,
     	    //AROS_LCA(APTR, csd->boardinfo, A0),
     	    //AROS_LCA(BOOL, state, D0));
 }
-BOOL SetSwitch(struct sagagfx_staticdata *csd, BOOL state)
+BOOL SetSwitch(struct vampiregfx_staticdata *csd, BOOL state)
 {
     if (csd->CardBase)
     	return AROS_CALL2(BOOL, gptr(csd, PSSO_BoardInfo_SetSwitch),
@@ -155,11 +155,11 @@ BOOL SetSwitch(struct sagagfx_staticdata *csd, BOOL state)
     	    AROS_LCA(BOOL, state, D0),
     	    struct Library*, csd->CardBase);
     else
-	return FALSE;  //P96_LC2(BOOL, csd->sagaromvector, 18,
+	return FALSE;  //P96_LC2(BOOL, csd->vampireromvector, 18,
     	    //AROS_LCA(APTR, csd->boardinfo, A0),
     	    //AROS_LCA(BOOL, state, D0));
 }
-void SetColorArray(struct sagagfx_staticdata *csd, UWORD start, UWORD count)
+void SetColorArray(struct vampiregfx_staticdata *csd, UWORD start, UWORD count)
 {
     if (csd->CardBase)
     	AROS_CALL3(BOOL, gptr(csd, PSSO_BoardInfo_SetColorArray),
@@ -168,12 +168,12 @@ void SetColorArray(struct sagagfx_staticdata *csd, UWORD start, UWORD count)
     	    AROS_LCA(WORD, count, D1),
     	    struct Library*, csd->CardBase);
     else
-	return;  //P96_LC3(BOOL, csd->sagaromvector, 19,
+	return;  //P96_LC3(BOOL, csd->vampireromvector, 19,
     	    //AROS_LCA(APTR, csd->boardinfo, A0),
     	    //AROS_LCA(WORD, start, D0),
     	    //AROS_LCA(WORD, count, D1));
 }
-void SetDAC(struct sagagfx_staticdata *csd)
+void SetDAC(struct vampiregfx_staticdata *csd)
 {
     if (csd->CardBase)
     	AROS_CALL2(BOOL, gptr(csd, PSSO_BoardInfo_SetDAC),
@@ -181,11 +181,11 @@ void SetDAC(struct sagagfx_staticdata *csd)
     	    AROS_LCA(ULONG, csd->rgbformat, D7),
     	    struct Library*, csd->CardBase);
     else
-	return;  //P96_LC2(BOOL, csd->sagaromvector, 20,
+	return;  //P96_LC2(BOOL, csd->vampireromvector, 20,
     	    //AROS_LCA(APTR, csd->boardinfo, A0),
     	    //AROS_LCA(ULONG, csd->rgbformat, D7));
 }
-void SetGC(struct sagagfx_staticdata *csd, struct ModeInfo *mi, BOOL border)
+void SetGC(struct vampiregfx_staticdata *csd, struct ModeInfo *mi, BOOL border)
 {
     if (csd->CardBase)
     	AROS_CALL3(BOOL, gptr(csd, PSSO_BoardInfo_SetGC),
@@ -194,12 +194,12 @@ void SetGC(struct sagagfx_staticdata *csd, struct ModeInfo *mi, BOOL border)
     	    AROS_LCA(BOOL, border, D0),
     	    struct Library*, csd->CardBase);
     else
-	return;  //P96_LC3(BOOL, csd->sagaromvector, 21,
+	return;  //P96_LC3(BOOL, csd->vampireromvector, 21,
     	    //AROS_LCA(APTR, csd->boardinfo, A0),
     	    //AROS_LCA(APTR, mi, A1),
     	    //AROS_LCA(BOOL, border, D0));
 }
-void SetPanning(struct sagagfx_staticdata *csd, UBYTE *video, UWORD width, WORD x, WORD y)
+void SetPanning(struct vampiregfx_staticdata *csd, UBYTE *video, UWORD width, WORD x, WORD y)
 {
     if (csd->CardBase)
     	AROS_CALL6(BOOL, gptr(csd, PSSO_BoardInfo_SetPanning),
@@ -211,7 +211,7 @@ void SetPanning(struct sagagfx_staticdata *csd, UBYTE *video, UWORD width, WORD 
     	    AROS_LCA(ULONG, csd->rgbformat, D7),
     	    struct Library*, csd->CardBase);
     else
-	return;  //P96_LC6(BOOL, csd->sagaromvector, 22,
+	return;  //P96_LC6(BOOL, csd->vampireromvector, 22,
     	    //AROS_LCA(APTR, csd->boardinfo, A0),
     	    //AROS_LCA(APTR, video, A1),
     	    //AROS_LCA(UWORD, width, D0),
@@ -219,7 +219,7 @@ void SetPanning(struct sagagfx_staticdata *csd, UBYTE *video, UWORD width, WORD 
     	    //AROS_LCA(WORD, y, D2),
     	    //AROS_LCA(ULONG, csd->rgbformat, D7));
 }
-BOOL FillRect(struct sagagfx_staticdata *csd, struct RenderInfo *ri, WORD x, WORD y, WORD w, WORD h, ULONG pen, UBYTE mask, ULONG rgbformat)
+BOOL FillRect(struct vampiregfx_staticdata *csd, struct RenderInfo *ri, WORD x, WORD y, WORD w, WORD h, ULONG pen, UBYTE mask, ULONG rgbformat)
 {
     if (csd->CardBase) {
     	AROS_CALL9(BOOL, gptr(csd, PSSO_BoardInfo_FillRect),
@@ -235,7 +235,7 @@ BOOL FillRect(struct sagagfx_staticdata *csd, struct RenderInfo *ri, WORD x, WOR
     	    struct Library*, csd->CardBase);
     	return gw (csd->boardinfo + PSSO_BoardInfo_AROSFlag);
     } else
-	return FALSE;  //P96_LC9(BOOL, csd->sagaromvector, 17,
+	return FALSE;  //P96_LC9(BOOL, csd->vampireromvector, 17,
     	    //AROS_LCA(APTR, csd->boardinfo, A0),
     	    //AROS_LCA(APTR, ri, A1),
     	    //AROS_LCA(WORD, x, D0),
@@ -246,7 +246,7 @@ BOOL FillRect(struct sagagfx_staticdata *csd, struct RenderInfo *ri, WORD x, WOR
     	    //AROS_LCA(UBYTE, mask, D5),
     	    //AROS_LCA(ULONG, rgbformat, D7));
 }
-BOOL InvertRect(struct sagagfx_staticdata *csd, struct RenderInfo *ri, WORD x, WORD y, WORD w, WORD h, UBYTE mask, ULONG rgbformat)
+BOOL InvertRect(struct vampiregfx_staticdata *csd, struct RenderInfo *ri, WORD x, WORD y, WORD w, WORD h, UBYTE mask, ULONG rgbformat)
 {
     if (csd->CardBase) {
     	AROS_CALL8(BOOL, gptr(csd, PSSO_BoardInfo_InvertRect),
@@ -261,7 +261,7 @@ BOOL InvertRect(struct sagagfx_staticdata *csd, struct RenderInfo *ri, WORD x, W
     	    struct Library*, csd->CardBase);
     	return gw (csd->boardinfo + PSSO_BoardInfo_AROSFlag);
     } else
-	return FALSE;  //P96_LC8(BOOL, csd->sagaromvector, 31,
+	return FALSE;  //P96_LC8(BOOL, csd->vampireromvector, 31,
     	    //AROS_LCA(APTR, csd->boardinfo, A0),
     	    //AROS_LCA(APTR, ri, A1),
     	    //AROS_LCA(WORD, x, D0),
@@ -271,7 +271,7 @@ BOOL InvertRect(struct sagagfx_staticdata *csd, struct RenderInfo *ri, WORD x, W
      	    //AROS_LCA(UBYTE, mask, D4),
     	    //AROS_LCA(ULONG, rgbformat, D7));
 }
-BOOL BlitRectNoMaskComplete(struct sagagfx_staticdata *csd, struct RenderInfo *risrc, struct RenderInfo *ridst,
+BOOL BlitRectNoMaskComplete(struct vampiregfx_staticdata *csd, struct RenderInfo *risrc, struct RenderInfo *ridst,
     WORD sx, WORD sy, WORD dx, WORD dy, WORD w, WORD h, UBYTE opcode, ULONG rgbformat)
 {
     if (csd->CardBase) {
@@ -290,7 +290,7 @@ BOOL BlitRectNoMaskComplete(struct sagagfx_staticdata *csd, struct RenderInfo *r
     	    struct Library*, csd->CardBase);
     	return gw (csd->boardinfo + PSSO_BoardInfo_AROSFlag);
     } else
-	return FALSE;  //P96_LC11(BOOL, csd->sagaromvector, 28,
+	return FALSE;  //P96_LC11(BOOL, csd->vampireromvector, 28,
     	    //AROS_LCA(APTR, csd->boardinfo, A0),
     	    //AROS_LCA(APTR, risrc, A1),
     	    //AROS_LCA(APTR, ridst, A2),
@@ -303,7 +303,7 @@ BOOL BlitRectNoMaskComplete(struct sagagfx_staticdata *csd, struct RenderInfo *r
      	    //AROS_LCA(UBYTE, opcode, D6),
     	    //AROS_LCA(ULONG, rgbformat, D7));
 };
-BOOL BlitPattern(struct sagagfx_staticdata *csd, struct RenderInfo *ri, struct Pattern *pat,
+BOOL BlitPattern(struct vampiregfx_staticdata *csd, struct RenderInfo *ri, struct Pattern *pat,
     WORD x, WORD y, WORD w, WORD h, UBYTE mask, ULONG rgbformat)
 {
     if (csd->CardBase) {
@@ -320,7 +320,7 @@ BOOL BlitPattern(struct sagagfx_staticdata *csd, struct RenderInfo *ri, struct P
     	    struct Library*, csd->CardBase);
     	return gw (csd->boardinfo + PSSO_BoardInfo_AROSFlag);
     } else
-	return FALSE;  //P96_LC9(BOOL, csd->sagaromvector, 30,
+	return FALSE;  //P96_LC9(BOOL, csd->vampireromvector, 30,
     	    //AROS_LCA(APTR, csd->boardinfo, A0),
     	    //AROS_LCA(APTR, ri, A1),
     	    //AROS_LCA(APTR, pat, A2),
@@ -332,7 +332,7 @@ BOOL BlitPattern(struct sagagfx_staticdata *csd, struct RenderInfo *ri, struct P
     	    //AROS_LCA(ULONG, rgbformat, D7));
 }
 
-BOOL BlitTemplate(struct sagagfx_staticdata *csd, struct RenderInfo *ri, struct Template *tmpl,
+BOOL BlitTemplate(struct vampiregfx_staticdata *csd, struct RenderInfo *ri, struct Template *tmpl,
     WORD x, WORD y, WORD w, WORD h, UBYTE mask, ULONG rgbformat)
 {
     if (csd->CardBase) {
@@ -349,7 +349,7 @@ BOOL BlitTemplate(struct sagagfx_staticdata *csd, struct RenderInfo *ri, struct 
     	    struct Library*, csd->CardBase);
     	return gw (csd->boardinfo + PSSO_BoardInfo_AROSFlag);
     } else
-	return FALSE;  //P96_LC9(BOOL, csd->sagaromvector, 27,
+	return FALSE;  //P96_LC9(BOOL, csd->vampireromvector, 27,
     	    //AROS_LCA(APTR, csd->boardinfo, A0),
     	    //AROS_LCA(APTR, ri, A1),
     	    //AROS_LCA(APTR, tmpl, A2),
@@ -361,7 +361,7 @@ BOOL BlitTemplate(struct sagagfx_staticdata *csd, struct RenderInfo *ri, struct 
     	    //AROS_LCA(ULONG, rgbformat, D7));
 }
 
-WORD CalculateBytesPerRow(struct sagagfx_staticdata *csd, WORD width, ULONG rgbformat)
+WORD CalculateBytesPerRow(struct vampiregfx_staticdata *csd, WORD width, ULONG rgbformat)
 {
     if (csd->CardBase)
     	return AROS_CALL3(BOOL, gptr(csd, PSSO_BoardInfo_CalculateBytesPerRow),
@@ -370,13 +370,13 @@ WORD CalculateBytesPerRow(struct sagagfx_staticdata *csd, WORD width, ULONG rgbf
     	    AROS_LCA(ULONG, rgbformat, D7),
     	    struct Library*, csd->CardBase);
     else
-	return -1;  //P96_LC3(BOOL, csd->sagaromvector, 23,
+	return -1;  //P96_LC3(BOOL, csd->vampireromvector, 23,
     	    //AROS_LCA(APTR, csd->boardinfo, A0),
     	    //AROS_LCA(UWORD, width, D0),
     	    //AROS_LCA(ULONG, rgbformat, D7));
 }
 
-BOOL SetSprite(struct sagagfx_staticdata *csd, BOOL activate)
+BOOL SetSprite(struct vampiregfx_staticdata *csd, BOOL activate)
 {
     if (csd->CardBase)
     	return AROS_CALL3(BOOL, gptr(csd, PSSO_BoardInfo_SetSprite),
@@ -384,37 +384,37 @@ BOOL SetSprite(struct sagagfx_staticdata *csd, BOOL activate)
 	    AROS_LCA(BOOL, activate, D0),
 	    AROS_LCA(ULONG, csd->rgbformat, D7),
     	    struct Library*, csd->CardBase);
-    return FALSE;  //P96_LC3(BOOL, csd->sagaromvector, 36,
+    return FALSE;  //P96_LC3(BOOL, csd->vampireromvector, 36,
     	//AROS_LCA(APTR, csd->boardinfo, A0),
     	//AROS_LCA(BOOL, activate, D0),
      	//AROS_LCA(ULONG, csd->rgbformat, D7));
 }	
 
-BOOL SetSpritePosition(struct sagagfx_staticdata *csd)
+BOOL SetSpritePosition(struct vampiregfx_staticdata *csd)
 {
     if (csd->CardBase)
     	return AROS_CALL2(BOOL, gptr(csd, PSSO_BoardInfo_SetSpritePosition),
 	    AROS_LCA(APTR, csd->boardinfo, A0),
 	    AROS_LCA(ULONG, csd->rgbformat, D7),
     	    struct Library*, csd->CardBase);
-    return FALSE;  //P96_LC2(BOOL, csd->sagaromvector, 37,
+    return FALSE;  //P96_LC2(BOOL, csd->vampireromvector, 37,
     	//AROS_LCA(APTR, csd->boardinfo, A0),
      	//AROS_LCA(ULONG, csd->rgbformat, D7));
 }	
 
-BOOL SetSpriteImage(struct sagagfx_staticdata *csd)
+BOOL SetSpriteImage(struct vampiregfx_staticdata *csd)
 {
     if (csd->CardBase)
     	return AROS_CALL2(BOOL, gptr(csd, PSSO_BoardInfo_SetSpriteImage),
 	    AROS_LCA(APTR, csd->boardinfo, A0),
 	    AROS_LCA(ULONG, csd->rgbformat, D7),
     	    struct Library*, csd->CardBase);
-    return FALSE;  //P96_LC2(BOOL, csd->sagaromvector, 38,
+    return FALSE;  //P96_LC2(BOOL, csd->vampireromvector, 38,
     	//AROS_LCA(APTR, csd->boardinfo, A0),
      	//AROS_LCA(ULONG, csd->rgbformat, D7));
 }
 
-BOOL SetSpriteColor(struct sagagfx_staticdata *csd, UBYTE idx, UBYTE r, UBYTE g, UBYTE b)
+BOOL SetSpriteColor(struct vampiregfx_staticdata *csd, UBYTE idx, UBYTE r, UBYTE g, UBYTE b)
 {
     if (csd->CardBase)
     	return AROS_CALL6(BOOL, gptr(csd, PSSO_BoardInfo_SetSpriteColor),
@@ -425,7 +425,7 @@ BOOL SetSpriteColor(struct sagagfx_staticdata *csd, UBYTE idx, UBYTE r, UBYTE g,
 	    AROS_LCA(UBYTE, b, D3),
 	    AROS_LCA(ULONG, csd->rgbformat, D7),
     	    struct Library*, csd->CardBase);
-    return FALSE;  //P96_LC6(BOOL, csd->sagaromvector, 39,
+    return FALSE;  //P96_LC6(BOOL, csd->vampireromvector, 39,
     	//AROS_LCA(APTR, csd->boardinfo, A0),
     	//AROS_LCA(UBYTE, idx, D0),
     	//AROS_LCA(UBYTE, r, D1),
@@ -449,7 +449,7 @@ WORD getrtgdepth(ULONG rgbformat)
     return 0;
 }
 
-ULONG getrtgformat(struct sagagfx_staticdata *csd, OOP_Object *pixfmt)
+ULONG getrtgformat(struct vampiregfx_staticdata *csd, OOP_Object *pixfmt)
 {
     IPTR depth, redmask, bluemask, endianswitch;
 
@@ -464,23 +464,23 @@ ULONG getrtgformat(struct sagagfx_staticdata *csd, OOP_Object *pixfmt)
     	if (redmask == 0x00007c00 && !endianswitch)
     	    return RGBFB_R5G5B5;
     	if (redmask == 0x00007c00 && endianswitch)
-    	    return RGBFB_NONE;   /* Not supported by SAGA. */
+    	    return RGBFB_NONE;   /* Not supported by Vampire. */
     	if (redmask == 0x0000003e && bluemask == 0x0000f800)
-    	    return RGBFB_NONE;   /* Not supported by SAGA. */
+    	    return RGBFB_NONE;   /* Not supported by Vampire. */
     }
     if (depth == 16) {
     	if (redmask == 0x0000f800 && !endianswitch)
     	    return RGBFB_R5G6B5;
     	if (redmask == 0x0000f800 && endianswitch)
-    	    return RGBFB_NONE;   /* Not supported by SAGA. */
+    	    return RGBFB_NONE;   /* Not supported by Vampire. */
     	if (redmask == 0x0000001f && bluemask == 0x0000f800)
-    	    return RGBFB_NONE;   /* Not supported by SAGA. */
+    	    return RGBFB_NONE;   /* Not supported by Vampire. */
     }
     if (depth == 32) {
 	if (redmask == 0x0000ff00)
-    	   return RGBFB_NONE;    /* Not supported by SAGA. */
+    	   return RGBFB_NONE;    /* Not supported by Vampire. */
         if (redmask == 0xff000000)
-    	   return RGBFB_NONE;    /* Not supported by SAGA. */
+    	   return RGBFB_NONE;    /* Not supported by Vampire. */
         if (redmask == 0x000000ff)
     	   return RGBFB_A8B8G8R8;
         if (redmask == 0x00ff0000)
@@ -495,14 +495,14 @@ ULONG getrtgformat(struct sagagfx_staticdata *csd, OOP_Object *pixfmt)
     return RGBFB_NONE;
 }
 
-void makerenderinfo(struct sagagfx_staticdata *csd, struct RenderInfo *ri, struct bm_data *bm)
+void makerenderinfo(struct vampiregfx_staticdata *csd, struct RenderInfo *ri, struct bm_data *bm)
 {
     ri->Memory = bm->VideoData;
     ri->BytesPerRow = bm->bytesperline;
     ri->RGBFormat = bm->rgbformat;
 }
 
-struct ModeInfo *getrtgmodeinfo(struct sagagfx_staticdata *csd, OOP_Object *sync, OOP_Object *pixfmt, struct ModeInfo *modeinfo)
+struct ModeInfo *getrtgmodeinfo(struct vampiregfx_staticdata *csd, OOP_Object *sync, OOP_Object *pixfmt, struct ModeInfo *modeinfo)
 {
     struct LibResolution *node;
     IPTR width, height, depth;
@@ -512,7 +512,7 @@ struct ModeInfo *getrtgmodeinfo(struct sagagfx_staticdata *csd, OOP_Object *sync
     OOP_GetAttr(pixfmt, aHidd_PixFmt_Depth, &depth);
 
     D(bug("getrtgmodeinfo %dx%dx%d\n", width, height, depth));
-    // SAGA RTG driver does not need anything else
+    // Vampire RTG driver does not need anything else
     // but real RTG does
     ForeachNode((csd->boardinfo + PSSO_BoardInfo_ResolutionsList), node) {
     	if (node->Width == width && node->Height == height) {
