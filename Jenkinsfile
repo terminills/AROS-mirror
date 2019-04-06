@@ -166,16 +166,16 @@ node('master') {
 			node {			
 				buildStep('amiga-m68k', 'Mason', '2.32', '6.5.0')
 			}
-		},
-		'Build Linux Hosted x86_64 version - GCC 8.3.0 - Binutils 2.32': {
-			node {			
-				buildStep('linux-x86_64', 'Mason', '2.32', '8.3.0', false)
-			}
-		},
-		'Build RasPi BigEndian version - GCC 8.3.0 - Binutils 2.32': {
-			node {			
-				buildStep('raspi-armeb', 'Mason', '2.32', '8.3.0')
-			}
+		//},
+		//'Build Linux Hosted x86_64 version - GCC 8.3.0 - Binutils 2.32': {
+		//	node {			
+		//		buildStep('linux-x86_64', 'Mason', '2.32', '8.3.0', false)
+		//	}
+		//},
+		//'Build RasPi BigEndian version - GCC 8.3.0 - Binutils 2.32': {
+		//	node {			
+		//		buildStep('raspi-armeb', 'Mason', '2.32', '8.3.0')
+		//	}
 		}
 	)
 }
