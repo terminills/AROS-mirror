@@ -12,6 +12,7 @@
 #include <proto/graphics.h>
 #include <proto/oop.h>
 
+#include "vampiregfx_video.h"
 #include "vampiregfx_intern.h"
 #include "vampiregfx_bitmap.h"
 
@@ -30,7 +31,9 @@ static int VampireGFX_Init(LIBBASETYPEPTR LIBBASE)
 
     struct ExecBase *SysBase = (LIBBASE)->csd.cs_SysBase;
     struct Library  *OOPBase;
-    struct Library  *GfxBase = TaggedOpenLibrary(TAGGEDOPEN_GRAPHICS);
+    LIBBASE->csd.cs_GfxBase = TaggedOpenLibrary(TAGGEDOPEN_GRAPHICS);
+    struct Library  *GfxBase = LIBBASE->csd.cs_GfxBase; 
+    struct IORequest io;
 
     D(bug("**************************** VampireGFX_Init ******************************\n"));
 
@@ -47,10 +50,10 @@ static int VampireGFX_Init(LIBBASETYPEPTR LIBBASE)
         {
             LIBBASE->library.lib_OpenCnt = 1;
 
-            BOARDID = ( *(volatile UWORD *)VREG_BOARD ) >> 8;
+            BOARDID = SAGA_BOARD_GET();
 
-            if (BOARDID != VREG_BOARD_Unknown &&
-                BOARDID < VREG_BOARD_Future)
+            if (BOARDID != SAGA_BOARD_Unknown &&
+                BOARDID < SAGA_BOARD_Future)
             {
                 //////////////////////////////////////////////////////
                 // If the user is holding down SHIFT, then the driver don't load.
