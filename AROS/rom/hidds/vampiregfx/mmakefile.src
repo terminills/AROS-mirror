@@ -8,4 +8,4 @@ USER_CFLAGS := -D__OOP_NOATTRBASES__ -D__GRAPHICS_NOHIDDBASE__ \
 
 %build_module mmake=kernel-amiga-m68k-vampiregfx \
     modname=vampiregfx modtype=hidd \
-    files="startup vampiregfx_hiddclass vampiregfx_bitmapclass vampirertg"
+    files="vampiregfx_init vampiregfx_hiddclass vampiregfx_bitmapclass vampirertg"
